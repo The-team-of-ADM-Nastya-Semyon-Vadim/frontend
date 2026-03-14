@@ -1,0 +1,189 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: 'Mazzard H';
+    background:#FFEEF0;
+    color:#805741;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:0 20px;
+}
+
+
+.header{
+    background:#FFFAFA;
+}
+
+.header-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:90px;
+}
+
+.nav{
+    display:flex;
+    gap:40px;
+}
+
+.nav a{
+    text-decoration:none;
+    color:#805741;
+}
+
+
+.hero{
+    background:#FFEEF0;
+
+    display:grid;
+}
+
+.background-img{
+   grid-area:1/1;
+}
+.background-imgs{
+   grid-area:1/1;
+   display: grid;
+   grid-template-columns: auto auto auto;
+   
+
+}
+.hero-inner{
+     grid-area:1/1;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    gap:40px;
+    position:sticky;
+    top:0;
+}
+
+.hero-text h1{
+    font-size:40px;
+    margin-bottom:20px;
+}
+
+.hero-text p{
+    margin-bottom:20px;
+    font-size:20px;
+}
+
+.hero-img{
+    width:400px;
+}
+
+.aboutustext{
+    max-width: 800px;
+    display:grid;
+    grid-template-columns:auto;
+    gap:24px;
+}
+.btn{
+    background:#F28AA1;
+    color:white;
+    border:none;
+    padding:12px 30px;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+
+.about{
+    padding:100px 0;
+}
+
+.about h2{
+    font-size:40px;
+    margin-bottom:30px;
+}
+
+.advantages{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:30px;
+    margin-top:40px;
+}
+
+
+.products{
+    padding:100px 0;
+}
+
+.product-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:30px;
+}
+
+.product{
+    background:#FFFAFA;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 29px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.product img{
+    width:100%;
+    margin-bottom:10px;
+}
+
+.price{
+    font-size:24px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+
+.offer{
+    padding:100px 0;
+}
+
+.offer-inner{
+    background:#FFFAFA;
+    border:4px solid #F28AA1;
+    border-radius:25px;
+    padding:60px;
+    text-align:center;
+}
+
+
+.subscribe{
+    padding:100px 0;
+}
+
+.subscribe-form{
+    display:flex;
+    gap:20px;
+    margin-top:20px;
+}
+
+.subscribe-form input{
+    padding:12px;
+    border-radius:8px;
+    border:none;
+    background:#FFFAFA;
+}
+
+
+.footer{
+    background:#FFFAFA;
+    padding:80px 0;
+}
+
+.footer-inner{
+    display:flex;
+    justify-content:space-between;
+}
+
+.footer-menu{
+    display:flex;
+    gap:30px;
+}
