@@ -8,8 +8,11 @@ body{
     font-family: 'Mazzard H';
     background:#FFEEF0;
     color:#805741;
+    width: 100%;
 }
-
+main{
+    width: auto;
+}
 .container{
     max-width:1200px;
     margin:auto;
@@ -19,6 +22,8 @@ body{
 
 .header{
     background:#FFFAFA;
+    width: 100%;
+    align-self: center;
 }
 
 .header-inner{
@@ -51,7 +56,7 @@ body{
 .background-imgs{
    grid-area:1/1;
    display: grid;
-   grid-template-columns: auto auto auto;
+   grid-template-columns: 50% auto auto;
    
 
 }
@@ -61,8 +66,6 @@ body{
     display:flex;
     align-items:center;
     gap:40px;
-    position:sticky;
-    top:0;
 }
 
 .hero-text h1{
