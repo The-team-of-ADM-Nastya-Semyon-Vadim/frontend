@@ -6,11 +6,20 @@
 
 body{
     font-family: 'Mazzard H';
+    font-weight: normal;
     background:#FFEEF0;
     color:#805741;
     margin:0 auto;
+    font-size: 20px;
 }
 
+h2{
+    font-family:'Mazzard H Medium';
+    font-size: 40px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
 main{
     max-width:1620px;
     margin:0 auto;
@@ -63,8 +72,9 @@ main{
 .background-imgs{
    grid-area:1/1;
    display: grid;
-   grid-template-columns: 50% auto auto;
-   
+   column-gap: 280px;
+   grid-template-columns: auto auto auto;
+   justify-items: end;
 
 }
 .hero-text{
@@ -75,7 +85,7 @@ main{
     align-self: flex-start;
     gap: 16px;
     max-width:1620px;
-    margin: auto 150px;
+    margin: auto auto;
 }
 .hero-text h1{
     font-size:40px;
@@ -104,6 +114,8 @@ main{
     cursor:pointer;
     margin-top: 16px;
     max-width: 253px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 
