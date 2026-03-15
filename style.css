@@ -22,7 +22,8 @@ h2{
 }
 main{
     max-width:1620px;
-    margin:0 150px;
+    margin:0 auto;
+    padding: 0 150px;
 }
 .container{
     max-width:1620px;
@@ -143,14 +144,15 @@ header{
     display:flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 60px;
+    gap: 24px;
     margin-top:24px;
+    justify-content: center;
 }
 
 .advantage{
-    width: 270px;
+    width: 200px;
     display: grid;
-    grid-template-rows: 220px auto auto;
+    grid-template-rows: auto auto auto;
     max-height: 320px;
     justify-items: center;
     text-align: center;
@@ -199,8 +201,9 @@ h4{
     border-radius:12px;
     box-shadow:0 8px 29px rgba(0,0,0,0.1);
     max-width: 292px;
-    min-width: 168px;
+    min-width: 167px;
     max-height: 387px;
+    min-height: 247px;
     display: grid;
     grid-template-rows: 202px 42px 28px auto;
 
@@ -248,10 +251,10 @@ h4{
     padding:100px 0;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: left;
 }
 .subscribe-inner{
-    justify-self: left;
+    margin: 0;
 }
 .subscribe-form{
     display:flex;
@@ -292,6 +295,7 @@ h4{
         gap:10px;
         height:auto;
         padding:15px 0;
+        margin: 0 auto;
     }
     .hero-text{
         margin: auto 16px;
@@ -303,6 +307,7 @@ h4{
     main{
         margin-left: 16px;
         margin-right: 16px;
+        padding: 0;
     }
     .background-imgs {
         display: flex;
