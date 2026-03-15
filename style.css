@@ -231,7 +231,7 @@ h4{
     border-radius:25px;
     border-style: dashed;
     padding:60px;
-    text-align:center;
+ 
     z-index: 2;
     width: 100%;
 }
@@ -248,8 +248,11 @@ h4{
     padding:100px 0;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
-
+.subscribe-inner{
+    justify-self: left;
+}
 .subscribe-form{
     display:flex;
     gap:20px;
@@ -314,6 +317,9 @@ h4{
     }
     .btn{
         max-width:100%;
+        width: 100%;
+    }
+    input{
         width: 100%;
     }
 }
