@@ -191,6 +191,7 @@ h4{
     border-radius:12px;
     box-shadow:0 8px 29px rgba(0,0,0,0.1);
     max-width: 292px;
+    min-width: 168px;
     max-height: 387px;
     display: grid;
     grid-template-rows: 202px 42px 28px auto;
@@ -212,19 +213,30 @@ h4{
 
 .offer{
     padding:100px 0;
+    display: grid;
 }
 
 .offer-inner{
+    grid-area:1/1;
     background:#FFFAFA;
     border:4px solid #F28AA1;
     border-radius:25px;
+    border-style: dashed;
     padding:60px;
     text-align:center;
+    z-index: 2;
 }
 
+.offer-background-imgs{
+   grid-area:1/1;
+   display: flex;
+   justify-content: space-between;
+   height: 100%;
 
+}
 .subscribe{
     padding:100px 0;
+    display: flex;
 }
 
 .subscribe-form{
