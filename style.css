@@ -8,17 +8,24 @@ body{
     font-family: 'Mazzard H';
     background:#FFEEF0;
     color:#805741;
-    width: 100%;
-}
-main{
-    width: auto;
-}
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:0 20px;
+    margin:0 auto;
 }
 
+main{
+    max-width:1620px;
+    margin:0 auto;
+}
+.container{
+    max-width:1620px;
+    margin: 0 auto;
+    padding:0 0;
+
+}
+.about-us {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
 
 .header{
     background:#FFFAFA;
@@ -60,33 +67,33 @@ main{
    
 
 }
-.hero-inner{
-     grid-area:1/1;
+.hero-text{
+    grid-area:1/1;
     z-index:2;
     display:flex;
-    align-items:center;
-    gap:40px;
+    flex-direction: column;
+    align-self: flex-start;
+    gap: 16px;
+    max-width:1620px;
+    margin: auto 150px;
 }
-
 .hero-text h1{
     font-size:40px;
-    margin-bottom:20px;
+
 }
 
 .hero-text p{
-    margin-bottom:20px;
     font-size:20px;
 }
 
-.hero-img{
-    width:400px;
-}
 
 .aboutustext{
-    max-width: 800px;
+    max-width: 810px;
+    min-width: 50%;
     display:grid;
     grid-template-columns:auto;
     gap:24px;
+    align-content: flex-start;
 }
 .btn{
     background:#F28AA1;
@@ -95,6 +102,8 @@ main{
     padding:12px 30px;
     border-radius:12px;
     cursor:pointer;
+    margin-top: 16px;
+    max-width: 253px;
 }
 
 
@@ -107,11 +116,15 @@ main{
     margin-bottom:30px;
 }
 
+.aboutus{
+    display: flex;
+    flex-direction: row;
+}
 .advantages{
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:30px;
-    margin-top:40px;
+    gap:60px;
+    margin-top:24px;
 }
 
 
