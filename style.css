@@ -14,7 +14,7 @@ body{
 }
 
 h2{
-    font-family:'Mazzard H Medium';
+    font-family:'Mazzard H';
     font-size: 40px;
     font-weight: 500;
     text-transform: uppercase;
@@ -75,6 +75,7 @@ main{
    column-gap: 280px;
    grid-template-columns: auto auto auto;
    justify-items: end;
+   overflow: visible;
 
 }
 .hero-text{
@@ -133,29 +134,67 @@ main{
     flex-direction: row;
 }
 .advantages{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:60px;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 60px;
     margin-top:24px;
 }
 
+.advantage{
+    width: 270px;
+    display: grid;
+    grid-template-rows: 220px auto auto;
+    max-height: 320px;
+    justify-items: center;
+    text-align: center;
+}
 
+h3{
+    padding-bottom: 16px;
+}
+h4{
+    font-family: 'Mazzard M';
+    font-weight: 500 ;
+    font-size: 18px;
+    padding-bottom: 8px;
+}
 .products{
     padding:100px 0;
 }
 
+.container-popular{
+    display: grid;
+}
 .product-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-area:1/1;
+    display:flex;
+    flex-direction: row;
     gap:30px;
+    z-index: 5;
+}
+
+.pop-background-imgs{
+   grid-area:1/1;
+   max-height: 500px;
+   display: flex;
+   justify-content: space-between;
+   overflow: h;
+
 }
 
 .product{
     background:#FFFAFA;
-    padding:20px;
+    padding: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-radius:12px;
     box-shadow:0 8px 29px rgba(0,0,0,0.1);
-    text-align:center;
+    max-width: 292px;
+    max-height: 387px;
+    display: grid;
+    grid-template-rows: 202px 42px 28px auto;
+
 }
 
 .product img{
@@ -164,6 +203,7 @@ main{
 }
 
 .price{
+    font-family: 'Mazzard M';
     font-size:24px;
     font-weight:bold;
     margin:10px 0;
