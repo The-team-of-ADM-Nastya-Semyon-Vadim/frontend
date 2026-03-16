@@ -2,6 +2,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
+    text-decoration:none;
 }
 
 body{
@@ -11,6 +12,7 @@ body{
     color:#805741;
     margin:0 auto;
     font-size: 20px;
+
 }
 
 h2{
@@ -48,8 +50,9 @@ header{
     justify-content:space-between;
     align-items:center;
     height:90px;
-    margin-left: 150px;
-    margin-right: 150px;
+    margin:0 auto;
+    max-width: 1620px;
+    padding: 0 150px;
 }
 
 .nav{
@@ -74,7 +77,7 @@ header{
 
 .background-img{
    grid-area:1/1;
-   width: 100%;
+
 }
 .background-imgs{
    grid-area:1/1;
@@ -84,16 +87,22 @@ header{
    justify-items: end;
    overflow: hidden;
 }
-.hero-text{
+
+.hero-content{
     grid-area:1/1;
     z-index:2;
+    max-width:1620px;
+    margin:20% auto;
+    padding: 0 150px;
+}
+.hero-text{
     display:flex;
     flex-direction: column;
     align-self: flex-start;
     gap: 16px;
-    max-width:1620px;
-    margin: auto auto;
-    padding: 16px;
+    max-width: 1100px;
+    justify-self: center;
+
 }
 .hero-text h1{
     font-size:40px;
@@ -234,9 +243,11 @@ h4{
     border-radius:25px;
     border-style: dashed;
     padding:60px;
- 
+    justify-items: center;
     z-index: 2;
     width: 100%;
+    text-align: center;
+    align-content: center;
 }
 
 .offer-background-imgs{
@@ -253,9 +264,7 @@ h4{
     flex-wrap: wrap;
     justify-content: left;
 }
-.subscribe-inner{
-    margin: 0;
-}
+
 .subscribe-form{
     display:flex;
     gap:20px;
@@ -280,12 +289,128 @@ h4{
 .footer-inner{
     display:flex;
     justify-content:space-between;
+     margin:0 auto;
+    max-width: 1620px;
+    padding: 0 150px;
 }
 
 .footer-menu{
     display:flex;
     gap:30px;
 }
+
+.catalog-top{
+    display: grid;
+}
+
+.catalog-filters{
+    display:flex;
+    gap:120px;
+    margin-bottom:80px;
+    grid-area:1/1;
+    z-index:2;
+}
+
+.catalog-top-inner{
+    grid-area: 1/1;
+        z-index:1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.catalog-background-imgs{
+   grid-area:1/1;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   overflow: hidden;
+   z-index: 3;
+   height: 50%;
+   
+}
+
+.catalog-top-container{
+    grid-area: 1/1;
+    z-index: 5;
+    max-width:1620px;
+    margin:0 auto;
+    padding: 0 150px;
+}
+
+.catalog-top-content{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+
+
+}
+
+.filter{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.filter h3{
+    color:#F28AA1;
+    margin-bottom:10px;
+}
+
+.catalog-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:40px;
+}
+
+.product-image{
+    position:relative;
+    height:220px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background: radial-gradient(circle, rgba(236,194,214,0.8) 0%, rgba(255,250,250,0.8) 100%);
+}
+
+.badge{
+    position:absolute;
+    top:10px;
+    left:10px;
+
+    padding:4px 10px;
+    border-radius:6px;
+
+    font-size:14px;
+    color:white;
+}
+
+.badge.new{
+    background:#F28AA1;
+}
+
+.badge.hit{
+    background:#F28AA1;
+}
+
+.badge.sale{
+    background:#CC4156;
+}
+.old{
+    text-decoration:line-through;
+    font-weight:300;
+    margin-right:6px;
+}
+
+.new{
+    color:#CC4156;
+    font-weight:700;
+}
+
+
+
+
+
 @media (max-width: 960px){
     body{
         font-size: 16px;
@@ -297,13 +422,35 @@ h4{
         padding:15px 0;
         margin: 0 auto;
     }
+
+    .background-img{
+       width: 100%;
+       overflow: hidden;
+    }
+    
+    .hero-content{
+        max-width:1620px;
+        margin:30% 16px;
+        padding: 0 0;
+    }
+    
     .hero-text{
         margin: auto 16px;
         padding: 0;
     }
-    h2{
+    h2 {
         font-size: 20px;
     }
+
+    .about h2{
+        font-size: 20px;
+        margin-bottom:0px;
+    }
+
+    h3{
+        padding: 0%;
+    }
+
     main{
         margin-left: 16px;
         margin-right: 16px;
@@ -311,7 +458,8 @@ h4{
     }
     .background-imgs {
         display: flex;
-        max-height: 400px;
+        max-height: 200px;
+        gap: 200px;
         overflow: hidden;
     }
     .aboutustext{
@@ -326,5 +474,16 @@ h4{
     }
     input{
         width: 100%;
+    }
+    .footer-inner {
+        flex-direction: column;
+        padding: 0 16px;
+    }
+    .footer{
+        background:#FFFAFA;
+        padding:48px 0;
+    }
+    .footer-menu{
+        margin: 16px 0;
     }
 }
