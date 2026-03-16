@@ -173,6 +173,10 @@ h4{
 
 .container-popular{
     display: grid;
+    /* full-bleed: на всю ширину экрана */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
 }
 .product-grid{
     grid-area:1/1;
@@ -180,45 +184,105 @@ h4{
     flex-direction: row;
     gap:30px;
     z-index: 5;
+    width: 100%;
     overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+    will-change: scroll-position;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+}
+.product-grid::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}
+.product-grid.is-dragging{
+    cursor: grabbing;
 }
 
 .pop-background-imgs{
    grid-area:1/1;
-   max-height: 500px;
    display: flex;
    justify-content: space-between;
+   align-items: center;
    overflow: hidden;
    width: 100%;
-
 }
 
 .product{
     background:#FFFAFA;
-    padding: 24px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 24px 19px 24px 19px;
     border-radius:12px;
     box-shadow:0 8px 29px rgba(0,0,0,0.1);
-    max-width: 292px;
-    min-width: 167px;
-    max-height: 387px;
-    min-height: 247px;
-    display: grid;
-    grid-template-rows: 202px 42px 28px auto;
-
+    width: 292px;
+    height: 387px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 292px;
 }
 
-.product img{
-    width:100%;
-    margin-bottom:10px;
+.product:nth-child(odd){
+    margin-top: 0;
+}
+
+.product:nth-child(even){
+    margin-top: 78px;
+}
+
+.product-image-wrapper{
+    width: 100%;
+    height: 179px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(236, 194, 214, 0.8) 0%, rgba(255, 250, 250, 0.8) 100%);
+    margin-bottom: 32px;
+}
+
+.product-image-wrapper img{
+    max-width: 206px;
+    max-height: 179px;
+    width: auto;
+    height: auto;
 }
 
 .price{
     font-family: 'Mazzard M';
     font-size:24px;
     font-weight:bold;
-    margin:10px 0;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.price-regular{
+    font-weight: 500;
+}
+
+.price-regular--old{
+    font-weight: 400;
+    text-decoration: line-through;
+    opacity: 0.6;
+    margin-right: 8px;
+}
+
+.price-sale{
+    font-weight: 700;
+    color: #CC4156;
+}
+
+.product h4{
+    margin-top: 0;
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.product .btn{
+    margin-top: 8px;
+    width: 100%;
 }
 
 
@@ -237,6 +301,10 @@ h4{
  
     z-index: 2;
     width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .offer-background-imgs{
