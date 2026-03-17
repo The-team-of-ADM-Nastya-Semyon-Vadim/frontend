@@ -327,6 +327,7 @@ h4{
    overflow: hidden;
    z-index: 3;
    height: 50%;
+   align-self: center;
    
 }
 
@@ -334,16 +335,12 @@ h4{
     grid-area: 1/1;
     z-index: 5;
     max-width:1620px;
-    margin:0 auto;
-    padding: 0 150px;
+    margin: 96px auto;
 }
 
 .catalog-top-content{
     display: flex;
     justify-content: space-between;
-    margin: 0 auto;
-
-
 }
 
 .filter{
