@@ -155,7 +155,8 @@ header{
     flex-wrap: wrap;
     gap: 24px;
     margin-top:24px;
-    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .advantage{
@@ -402,6 +403,8 @@ h4{
     z-index: 5;
     max-width:1620px;
     margin: 96px auto;
+    width: 100%;
+    padding: 0 150px;
 }
 
 .catalog-top-content{
@@ -548,5 +551,9 @@ h4{
     }
     .footer-menu{
         margin: 16px 0;
+    }
+    
+    .catalog-top-content{
+flex-direction: column;
     }
 }
