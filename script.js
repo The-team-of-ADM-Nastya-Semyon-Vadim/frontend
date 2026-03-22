@@ -5,17 +5,71 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 const CAROUSEL_OPTIONS = { speedPxPerSec: 35, resumeAfterMs: 5000 };
 
-function getImageUrl(imagePath) {
-    if (!imagePath) {
-        return 'img/product-placeholder.png';
-    }
+/** Макс. размер картинки в карточке ~206×179; грузим ~2× для retina, WebP через transform */
+const PRODUCT_IMG_DISPLAY_W = 206;
+const PRODUCT_IMG_DISPLAY_H = 179;
+const PRODUCT_IMG_FETCH_W = 412;
+const PRODUCT_IMG_FETCH_H = 358;
+const PRODUCT_IMG_QUALITY = 80;
 
+function encodeStoragePath(path) {
+    return path
+        .replace(/^\/+/, '')
+        .split('/')
+        .filter(Boolean)
+        .map((segment) => encodeURIComponent(segment))
+        .join('/');
+}
+
+/**
+ * Прямая ссылка на объект в Storage (без ресайза).
+ */
+function getSupabasePublicObjectUrl(imagePath) {
+    if (!imagePath) return null;
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
         return imagePath;
     }
+    const encoded = encodeStoragePath(imagePath);
+    return `${SUPABASE_URL}/storage/v1/object/public/${encoded}`;
+}
 
-    const base = `${SUPABASE_URL}/storage/v1/object/public/`;
-    return base + imagePath.replace(/^\/+/, '');
+/**
+ * Оптимизированное превью через Image Transformation (меньше байт, быстрее LCP).
+ * Если в проекте не включены трансформации — сработает onerror → fallback на object URL.
+ */
+function getSupabaseOptimizedImageUrl(imagePath) {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return imagePath;
+    }
+    const encoded = encodeStoragePath(imagePath);
+    const params = new URLSearchParams({
+        width: String(PRODUCT_IMG_FETCH_W),
+        height: String(PRODUCT_IMG_FETCH_H),
+        resize: 'contain',
+        quality: String(PRODUCT_IMG_QUALITY),
+        format: 'webp',
+    });
+    return `${SUPABASE_URL}/storage/v1/render/image/public/${encoded}?${params.toString()}`;
+}
+
+/**
+ * @param {string | null | undefined} imagePath
+ * @returns {{ src: string, fallbackSrc: string | null }}
+ */
+function getProductImageSources(imagePath) {
+    if (!imagePath) {
+        return { src: 'img/product-placeholder.png', fallbackSrc: null };
+    }
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return { src: imagePath, fallbackSrc: null };
+    }
+    const optimized = getSupabaseOptimizedImageUrl(imagePath);
+    const fallback = getSupabasePublicObjectUrl(imagePath);
+    return {
+        src: optimized || 'img/product-placeholder.png',
+        fallbackSrc: fallback && fallback !== optimized ? fallback : null,
+    };
 }
 
 function teardownInfiniteCarousel(grid) {
@@ -164,8 +218,35 @@ function createProductCard(product, index) {
     imageWrapper.className = 'product-image-wrapper';
 
     const img = document.createElement('img');
-    img.src = getImageUrl(product.image_url);
+    const { src, fallbackSrc } = getProductImageSources(product.image_url);
+    img.src = src;
     img.alt = product.name || 'Товар';
+    img.decoding = 'async';
+    img.width = PRODUCT_IMG_DISPLAY_W;
+    img.height = PRODUCT_IMG_DISPLAY_H;
+    img.sizes = `${PRODUCT_IMG_DISPLAY_W}px`;
+
+    if (index < 3) {
+        img.loading = 'eager';
+        if ('fetchPriority' in img) img.fetchPriority = 'high';
+    } else {
+        img.loading = 'lazy';
+        if ('fetchPriority' in img) img.fetchPriority = 'low';
+    }
+
+    const placeholderFallback = 'img/product-placeholder.png';
+    img.addEventListener('error', function onImgError() {
+        if (fallbackSrc && img.src !== fallbackSrc) {
+            img.src = fallbackSrc;
+            return;
+        }
+        if (img.src !== placeholderFallback) {
+            img.src = placeholderFallback;
+            return;
+        }
+        img.removeEventListener('error', onImgError);
+    });
+
     imageWrapper.appendChild(img);
 
     const title = document.createElement('h4');
