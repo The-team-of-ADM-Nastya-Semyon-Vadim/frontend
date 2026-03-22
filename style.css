@@ -596,11 +596,23 @@ h4{
 }
 
 .catalog-filters{
-    display:flex;
-    gap:120px;
-    margin-bottom:80px;
-    grid-area:1/1;
-    z-index:2;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: clamp(1.25rem, 3vw, 3rem);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* Три столбца от ~середины контентной зоны, с отступом от правого края */
+    padding-right: clamp(16px, 3vw, 48px);
+    margin-bottom: 80px;
+    margin-left: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    z-index: 2;
 }
 
 .catalog-top-inner{
@@ -626,24 +638,41 @@ h4{
 .catalog-top-container{
     grid-area: 1/1;
     z-index: 5;
-    max-width:1620px;
+    width: 100%;
+    max-width: 1620px;
     margin: 96px auto;
+    padding: 0 clamp(16px, 4vw, 48px);
+    box-sizing: border-box;
 }
 
 .catalog-top-content{
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.catalog-top-title{
+    margin: 0;
+    width: 100%;
 }
 
 .filter{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 0 0 auto;
+    min-width: min-content;
 }
 
 .filter h3{
     color:#F28AA1;
-    margin-bottom:10px;
+    margin: 0 0 6px 0;
+    white-space: nowrap;
 }
 
 .catalog-grid{
@@ -670,11 +699,16 @@ h4{
 .catalog-filter-list{
     display: flex;
     flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
     gap: 12px;
+    width: max-content;
+    max-width: 100%;
 }
 .catalog-filter-btn{
     display: block;
-    width: 100%;
+    width: max-content;
+    max-width: 100%;
     padding: 0;
     margin: 0;
     border: none;
@@ -687,6 +721,8 @@ h4{
     cursor: pointer;
     font-weight: 400;
     transition: font-weight 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .catalog-filter-btn:hover{
     color: #805741;
@@ -836,6 +872,15 @@ h4{
 
     .subscribe-form input{
         flex: 1 1 100%;
+    }
+
+    .catalog-top-container{
+        margin: 48px auto 64px;
+        padding: 0 16px;
+    }
+    .catalog-filters{
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
     .catalog-grid{
