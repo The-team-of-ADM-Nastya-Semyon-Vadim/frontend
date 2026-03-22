@@ -1,7 +1,30 @@
 const SUPABASE_URL = 'https://biyhsdqiuskocypowlsv.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeWhzZHFpdXNrb2N5cG93bHN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0NjY1MjMsImV4cCI6MjA4ODA0MjUyM30.BVcy691xYte7JHpuCTEA4DZ0jBaSFVIcvalbN8usyc0';
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/** UMD может повесить клиент на globalThis.supabase; без try/catalog падает весь script.js */
+let supabaseClient = null;
+try {
+    const sb = globalThis.supabase;
+    if (sb && typeof sb.createClient === 'function') {
+        supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+} catch (e) {
+    console.error('Инициализация Supabase:', e);
+}
+
+function ensureSupabaseClient() {
+    if (supabaseClient) return true;
+    try {
+        const sb = globalThis.supabase;
+        if (sb && typeof sb.createClient === 'function') {
+            supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            return true;
+        }
+    } catch (e) {
+        console.error('Повторная инициализация Supabase:', e);
+    }
+    return false;
+}
 
 const CAROUSEL_OPTIONS = { speedPxPerSec: 35, resumeAfterMs: 5000 };
 
@@ -302,6 +325,11 @@ async function loadPopularProducts() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
 
+    if (!ensureSupabaseClient()) {
+        console.error('Supabase не загружен — популярные товары недоступны.');
+        return;
+    }
+
     setupInfiniteCarousel(grid, CAROUSEL_OPTIONS);
 
     const { data, error } = await supabaseClient
@@ -336,35 +364,189 @@ async function loadPopularProducts() {
     setupInfiniteCarousel(grid, CAROUSEL_OPTIONS);
 }
 
+/** Кэш товаров каталога после загрузки из Supabase (для фильтров) */
+let catalogProductsCache = null;
+
+function setCatalogFiltersDisabled(disabled) {
+    document.querySelectorAll('#catalog-filters .catalog-filter-btn').forEach((b) => {
+        b.disabled = disabled;
+    });
+}
+
+function getEffectiveCatalogPrice(product) {
+    if (product.sale_price != null && product.sale_price !== '') {
+        return Number(product.sale_price);
+    }
+    if (product.price != null && product.price !== '') {
+        return Number(product.price);
+    }
+    return NaN;
+}
+
+/**
+ * Фильтры каталога (поля в БД Supabase):
+ * — Новинки: is_new или isNew = true
+ * — Хиты: isPopular = true
+ * — Со скидкой: sale_price задан
+ * — Категория: category совпадает с подписью кнопки (data-category)
+ * — Цена: цена (sale_price или price) не превышает выбранный максимум
+ */
+function matchesCatalogFilters(product) {
+    const root = document.getElementById('catalog-filters');
+    if (!root) return true;
+
+    for (const btn of root.querySelectorAll('.catalog-filter-btn[data-toggle].is-active')) {
+        const key = btn.dataset.toggle;
+        if (key === 'new') {
+            if (!(product.is_new === true || product.isNew === true)) return false;
+        }
+        if (key === 'hit') {
+            if (product.isPopular !== true) return false;
+        }
+        if (key === 'sale') {
+            if (product.sale_price == null || product.sale_price === '') return false;
+        }
+    }
+
+    const catActive = root.querySelectorAll('.catalog-filter-btn[data-category].is-active');
+    if (catActive.length) {
+        const wanted = [...catActive].map((b) => b.dataset.category);
+        const pc = String(product.category ?? '').trim();
+        if (!wanted.includes(pc)) return false;
+    }
+
+    const priceBtn = root.querySelector('.catalog-filter-btn[data-price-max].is-active');
+    if (priceBtn) {
+        const max = Number(priceBtn.dataset.priceMax);
+        const eff = getEffectiveCatalogPrice(product);
+        if (Number.isNaN(eff) || eff > max) return false;
+    }
+
+    return true;
+}
+
+function applyCatalogFilters() {
+    const grid = document.getElementById('catalog-grid');
+    if (!grid || catalogProductsCache === null) return;
+
+    try {
+        const filtered = catalogProductsCache.filter(matchesCatalogFilters);
+
+        grid.innerHTML = '';
+
+        if (filtered.length === 0) {
+            if (catalogProductsCache.length === 0) {
+                grid.innerHTML =
+                    '<p class="catalog-empty">В каталоге пока нет товаров.</p>';
+            } else {
+                grid.innerHTML =
+                    '<p class="catalog-noresults" role="status">Ничего не найдено</p>';
+            }
+            return;
+        }
+
+        filtered.forEach((product, i) => {
+            grid.appendChild(createProductCard(product, i));
+        });
+    } catch (err) {
+        console.error('Ошибка при отображении каталога:', err);
+        grid.innerHTML =
+            '<p class="catalog-load-error" role="alert">Не удалось отобразить товары. Обновите страницу.</p>';
+    }
+}
+
+function setupCatalogFilters() {
+    const root = document.getElementById('catalog-filters');
+    if (!root) return;
+
+    root.addEventListener('click', (e) => {
+        const btn = e.target.closest('.catalog-filter-btn');
+        if (!btn || !root.contains(btn) || btn.disabled) return;
+        if (catalogProductsCache === null) return;
+
+        if (btn.dataset.toggle) {
+            e.preventDefault();
+            e.stopPropagation();
+            btn.classList.toggle('is-active');
+            btn.setAttribute('aria-pressed', String(btn.classList.contains('is-active')));
+            applyCatalogFilters();
+            return;
+        }
+
+        if (btn.dataset.category) {
+            e.preventDefault();
+            e.stopPropagation();
+            btn.classList.toggle('is-active');
+            btn.setAttribute('aria-pressed', String(btn.classList.contains('is-active')));
+            applyCatalogFilters();
+            return;
+        }
+
+        if (btn.hasAttribute('data-price-max')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const wasActive = btn.classList.contains('is-active');
+            root.querySelectorAll('.catalog-filter-btn[data-price-max]').forEach((b) => {
+                b.classList.remove('is-active');
+                b.setAttribute('aria-pressed', 'false');
+            });
+            if (!wasActive) {
+                btn.classList.add('is-active');
+                btn.setAttribute('aria-pressed', 'true');
+            }
+            applyCatalogFilters();
+        }
+    });
+}
+
 async function loadCatalogProducts() {
     const grid = document.getElementById('catalog-grid');
     if (!grid) return;
 
-    const { data, error } = await supabaseClient.from('products').select('*');
+    try {
+        if (!ensureSupabaseClient()) {
+            catalogProductsCache = null;
+            grid.innerHTML =
+                '<p class="catalog-load-error" role="alert">Не удалось загрузить библиотеку данных. Проверьте подключение к интернету и обновите страницу.</p>';
+            return;
+        }
 
-    if (error) {
-        console.error('Ошибка загрузки каталога из Supabase:', error);
+        const { data, error } = await supabaseClient.from('products').select('*');
+
+        if (error) {
+            console.error('Ошибка загрузки каталога из Supabase:', error);
+            catalogProductsCache = null;
+            grid.innerHTML =
+                '<p class="catalog-load-error" role="alert">Не удалось загрузить товары. Попробуйте обновить страницу.</p>';
+            return;
+        }
+
+        catalogProductsCache = data || [];
+
+        if (catalogProductsCache.length === 0) {
+            grid.innerHTML =
+                '<p class="catalog-empty">В каталоге пока нет товаров.</p>';
+            return;
+        }
+
+        applyCatalogFilters();
+    } catch (err) {
+        console.error('Каталог:', err);
+        catalogProductsCache = null;
         grid.innerHTML =
             '<p class="catalog-load-error" role="alert">Не удалось загрузить товары. Попробуйте обновить страницу.</p>';
-        return;
+    } finally {
+        setCatalogFiltersDisabled(false);
     }
-
-    const products = data || [];
-
-    grid.innerHTML = '';
-
-    if (products.length === 0) {
-        grid.innerHTML =
-            '<p class="catalog-empty">В каталоге пока нет товаров.</p>';
-        return;
-    }
-
-    products.forEach((product, i) => {
-        grid.appendChild(createProductCard(product, i));
-    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadPopularProducts();
-    loadCatalogProducts();
+    ensureSupabaseClient();
+    if (document.getElementById('product-grid')) {
+        loadPopularProducts();
+    }
+    if (document.getElementById('catalog-grid')) {
+        setupCatalogFilters();
+        loadCatalogProducts();
+    }
 });
