@@ -3,6 +3,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const CAROUSEL_OPTIONS = { speedPxPerSec: 35, resumeAfterMs: 5000 };
+
 function getImageUrl(imagePath) {
     if (!imagePath) {
         return 'img/product-placeholder.png';
@@ -16,17 +18,23 @@ function getImageUrl(imagePath) {
     return base + imagePath.replace(/^\/+/, '');
 }
 
+function teardownInfiniteCarousel(grid) {
+    if (grid._carouselCleanup) {
+        grid._carouselCleanup();
+        grid._carouselCleanup = null;
+    }
+    grid.querySelectorAll('[data-carousel-clone="true"]').forEach((el) => el.remove());
+}
+
 function setupInfiniteCarousel(grid, options = {}) {
+    teardownInfiniteCarousel(grid);
+
     const speedPxPerSec = options.speedPxPerSec ?? 30;
     const resumeAfterMs = options.resumeAfterMs ?? 5000;
-
-    // Убираем старые клоны, если функция вызвана повторно
-    Array.from(grid.querySelectorAll('[data-carousel-clone="true"]')).forEach((el) => el.remove());
 
     const originals = Array.from(grid.children);
     if (originals.length === 0) return;
 
-    // Клонируем элементы, чтобы создать "вторую дорожку"
     originals.forEach((el) => {
         const clone = el.cloneNode(true);
         clone.setAttribute('data-carousel-clone', 'true');
@@ -43,12 +51,10 @@ function setupInfiniteCarousel(grid, options = {}) {
     let dragStartScrollLeft = 0;
 
     function getHalfWidth() {
-        // половина = ширина оригинальных элементов (без клонов)
         let w = 0;
         for (let i = 0; i < originals.length; i++) {
             w += originals[i].getBoundingClientRect().width;
         }
-        // плюс gaps (flex gap не входит в width элемента)
         const styles = getComputedStyle(grid);
         const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
         w += gap * Math.max(0, originals.length - 1);
@@ -93,12 +99,9 @@ function setupInfiniteCarousel(grid, options = {}) {
     }
 
     function onPointerDown(e) {
-        // Нажатие останавливает карусель
         pauseIndefinitely();
-
         isDragging = true;
         grid.classList.add('is-dragging');
-
         grid.setPointerCapture?.(e.pointerId);
         dragStartX = e.clientX;
         dragStartScrollLeft = grid.scrollLeft;
@@ -121,8 +124,11 @@ function setupInfiniteCarousel(grid, options = {}) {
     }
 
     function onClick() {
-        // Клик просто ставит на паузу (и потом автозапуск через 5 сек)
         pauseTemporarily();
+    }
+
+    function onScroll() {
+        if (isDragging) normalizeScroll();
     }
 
     grid.style.overflowX = 'auto';
@@ -132,94 +138,116 @@ function setupInfiniteCarousel(grid, options = {}) {
     grid.addEventListener('pointerup', onPointerUpOrCancel);
     grid.addEventListener('pointercancel', onPointerUpOrCancel);
     grid.addEventListener('click', onClick);
-    grid.addEventListener('scroll', () => {
-        if (isDragging) normalizeScroll();
-    }, { passive: true });
+    grid.addEventListener('scroll', onScroll, { passive: true });
 
-    if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(tick);
+
+    grid._carouselCleanup = () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+        if (resumeTimer) clearTimeout(resumeTimer);
+        grid.removeEventListener('pointerdown', onPointerDown);
+        grid.removeEventListener('pointermove', onPointerMove);
+        grid.removeEventListener('pointerup', onPointerUpOrCancel);
+        grid.removeEventListener('pointercancel', onPointerUpOrCancel);
+        grid.removeEventListener('click', onClick);
+        grid.removeEventListener('scroll', onScroll);
+    };
+}
+
+function createProductCard(product, index) {
+    const card = document.createElement('div');
+    card.className = 'product product--enter';
+    card.style.animationDelay = `${index * 70}ms`;
+
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'product-image-wrapper';
+
+    const img = document.createElement('img');
+    img.src = getImageUrl(product.image_url);
+    img.alt = product.name || 'Товар';
+    imageWrapper.appendChild(img);
+
+    const title = document.createElement('h4');
+    title.textContent = product.name || 'Без названия';
+
+    const price = document.createElement('div');
+    price.className = 'price';
+
+    const hasSalePrice = product.sale_price !== null && product.sale_price !== undefined;
+
+    if (hasSalePrice && product.price != null) {
+        const regularSpan = document.createElement('span');
+        regularSpan.className = 'price-regular--old';
+        regularSpan.textContent = product.price + ' ₽';
+
+        const saleSpan = document.createElement('span');
+        saleSpan.className = 'price-sale';
+        saleSpan.textContent = product.sale_price + ' ₽';
+
+        price.appendChild(regularSpan);
+        price.appendChild(saleSpan);
+    } else if (product.price != null) {
+        const regularSpan = document.createElement('span');
+        regularSpan.className = 'price-regular';
+        regularSpan.textContent = product.price + ' ₽';
+        price.appendChild(regularSpan);
+    } else {
+        price.textContent = 'Цена по запросу';
+    }
+
+    const button = document.createElement('button');
+    button.className = 'btn';
+    button.textContent = 'В корзину';
+
+    card.appendChild(imageWrapper);
+    card.appendChild(title);
+    card.appendChild(price);
+    card.appendChild(button);
+
+    card.addEventListener(
+        'animationend',
+        () => {
+            card.classList.remove('product--enter');
+        },
+        { once: true }
+    );
+
+    return card;
 }
 
 async function loadPopularProducts() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
 
-    grid.innerHTML = '<p>Загружаем товары...</p>';
+    setupInfiniteCarousel(grid, CAROUSEL_OPTIONS);
 
     const { data, error } = await supabaseClient
         .from('products')
         .select('*')
         .eq('isPopular', true);
 
-    console.log('Supabase products raw data:', data);
+    teardownInfiniteCarousel(grid);
 
     if (error) {
         console.error('Ошибка загрузки товаров из Supabase:', error);
-        grid.innerHTML = '<p>Не удалось загрузить товары. Попробуйте позже.</p>';
+        setupInfiniteCarousel(grid, CAROUSEL_OPTIONS);
         return;
     }
 
-    if (!data || data.length === 0) {
-        grid.innerHTML = '<p>Популярные товары пока не добавлены.</p>';
-        return;
-    }
+    const products = data || [];
 
     grid.innerHTML = '';
 
-    data.forEach((product) => {
-        const card = document.createElement('div');
-        card.className = 'product';
+    if (products.length === 0) {
+        return;
+    }
 
-        const imageWrapper = document.createElement('div');
-        imageWrapper.className = 'product-image-wrapper';
-
-        const img = document.createElement('img');
-        img.src = getImageUrl(product.image_url);
-        img.alt = product.name || 'Товар';
-        imageWrapper.appendChild(img);
-
-        const title = document.createElement('h4');
-        title.textContent = product.name || 'Без названия';
-
-        const price = document.createElement('div');
-        price.className = 'price';
-
-        const hasSalePrice = product.sale_price !== null && product.sale_price !== undefined;
-
-        if (hasSalePrice && product.price != null) {
-            const regularSpan = document.createElement('span');
-            regularSpan.className = 'price-regular--old';
-            regularSpan.textContent = product.price + ' ₽';
-
-            const saleSpan = document.createElement('span');
-            saleSpan.className = 'price-sale';
-            saleSpan.textContent = product.sale_price + ' ₽';
-
-            price.appendChild(regularSpan);
-            price.appendChild(saleSpan);
-        } else if (product.price != null) {
-            const regularSpan = document.createElement('span');
-            regularSpan.className = 'price-regular';
-            regularSpan.textContent = product.price + ' ₽';
-            price.appendChild(regularSpan);
-        } else {
-            price.textContent = 'Цена по запросу';
-        }
-
-        const button = document.createElement('button');
-        button.className = 'btn';
-        button.textContent = 'В корзину';
-
-        card.appendChild(imageWrapper);
-        card.appendChild(title);
-        card.appendChild(price);
-        card.appendChild(button);
-
-        grid.appendChild(card);
+    products.forEach((product, i) => {
+        grid.appendChild(createProductCard(product, i));
     });
 
-    setupInfiniteCarousel(grid, { speedPxPerSec: 35, resumeAfterMs: 5000 });
+    setupInfiniteCarousel(grid, CAROUSEL_OPTIONS);
 }
 
 document.addEventListener('DOMContentLoaded', loadPopularProducts);
-
