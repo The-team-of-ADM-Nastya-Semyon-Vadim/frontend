@@ -29,10 +29,10 @@ function ensureSupabaseClient() {
 const CAROUSEL_OPTIONS = { speedPxPerSec: 35, resumeAfterMs: 5000 };
 
 /** Макс. размер картинки в карточке ~206×179; грузим ~2× для retina через transform */
-const PRODUCT_IMG_DISPLAY_W = 206;
-const PRODUCT_IMG_DISPLAY_H = 179;
-const PRODUCT_IMG_FETCH_W = 412;
-const PRODUCT_IMG_FETCH_H = 358;
+const PRODUCT_IMG_DISPLAY_W = 135;
+const PRODUCT_IMG_DISPLAY_H = 100;
+const PRODUCT_IMG_FETCH_W = 270;
+const PRODUCT_IMG_FETCH_H = 200;
 const PRODUCT_IMG_QUALITY = 80;
 /** Не передаём format=webp: на части проектов Supabase отвечает 400 (allowed values). Ресайз+quality работают без format. */
 
@@ -274,7 +274,9 @@ function createProductCard(product, index) {
     imageWrapper.appendChild(img);
 
     const title = document.createElement('h4');
-    title.textContent = product.name || 'Без названия';
+    const titleText = product.name || 'Без названия';
+    title.textContent = titleText;
+    title.setAttribute('title', titleText);
 
     const price = document.createElement('div');
     price.className = 'price';

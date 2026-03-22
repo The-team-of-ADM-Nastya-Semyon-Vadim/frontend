@@ -26,6 +26,13 @@ main{
     max-width:1620px;
     margin:0 auto;
     padding: 0 150px;
+    min-width: 0;
+}
+
+section.catalog{
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 .container{
     max-width:1620px;
@@ -46,18 +53,57 @@ header{
 }
 
 .header-inner{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    height:90px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+    min-height: 90px;
     margin:0 auto;
     max-width: 1620px;
     padding: 0 150px;
+    box-sizing: border-box;
+}
+
+.logo{
+    display: inline-block;
+    line-height: 0;
+}
+
+.logo img{
+    display: block;
 }
 
 .nav{
     display:flex;
+    flex-wrap: wrap;
     gap:40px;
+    justify-content: center;
+    justify-self: center;
+    width: 100%;
+}
+
+.header-contact{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #805741;
+    font-family: 'Mazzard M', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.header-contact img{
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.header-contact:hover{
+    color: #5c4030;
 }
 
 .nav a{
@@ -139,6 +185,11 @@ img.illustration{
     gap:24px;
     align-content: flex-start;
 }
+button,
+.btn{
+    font-family: 'Mazzard M', 'Mazzard H', sans-serif;
+}
+
 .btn{
     background:#F28AA1;
     color:white;
@@ -253,6 +304,15 @@ h4{
     width: 292px;
     height: 387px;
     flex: 0 0 292px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.product-grid > .product .btn{
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto;
 }
 
 .product-grid > .product:nth-child(odd){
@@ -266,7 +326,8 @@ h4{
 /* Сетка каталога — без зигзага и на всю колонку */
 .catalog-grid > .product{
     width: 100%;
-    min-height: 387px;
+    min-width: 0;
+    min-height: 0;
     height: auto;
 }
 
@@ -285,6 +346,17 @@ h4{
     margin-bottom: 32px;
 }
 
+/* Каталог: область картинки 135×100, картинка не вылезает из карточки */
+.catalog-grid .product-image-wrapper{
+    aspect-ratio: 135 / 100;
+    height: auto;
+    max-height: none;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
 .product-image-wrapper img{
     max-width: 206px;
     max-height: 179px;
@@ -293,6 +365,52 @@ h4{
     -webkit-user-drag: none;
     user-select: none;
     -webkit-user-select: none;
+}
+
+.catalog-grid .product-image-wrapper img{
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center center;
+}
+
+.catalog-grid .product h4{
+    line-height: 1.35;
+    min-height: 0;
+    margin-bottom: 6px;
+    padding-bottom: 0;
+}
+
+/* Цена одна строка */
+.catalog-grid .price{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.catalog-grid .product .btn{
+    flex-shrink: 0;
+    height: 43px;
+    min-height: 43px;
+    max-height: 43px;
+    margin-top: 10px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    font-family: 'Mazzard H', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: none;
 }
 
 .price{
@@ -343,6 +461,19 @@ h4{
     max-width: 100%;
     border-radius: 8px;
 }
+
+.catalog-grid .product--skeleton .skeleton-block{
+    width: 100%;
+    aspect-ratio: 135 / 100;
+    height: auto;
+    max-width: 100%;
+}
+
+.catalog-grid .product--skeleton .skeleton-btn{
+    height: 43px;
+    margin-top: 8px;
+}
+
 .skeleton-line{
     height: 18px;
     border-radius: 6px;
@@ -476,16 +607,25 @@ h4{
 .footer{
     background:#FFFAFA;
     padding:80px 0;
+    margin-top: 180px;
 }
 
 .footer-inner{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+    margin: 0 auto;
+    max-width: 1620px;
+    padding: 0 150px;
+}
+
+.footer-columns{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     align-items: start;
-    margin: 0 auto;
-    max-width: 1620px;
-    padding: 0 150px;
+    min-width: 0;
 }
 
 .footer-col--left{
@@ -593,25 +733,48 @@ h4{
 
 .catalog-top{
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+/* Белый фон под всей высотой блока контента, без горизонтального скролла, пропорции картинки сохраняются (object-fit: cover) */
+.catalog-top .background-img{
+    grid-area: 1 / 1;
+    z-index: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    align-self: stretch;
+    justify-self: stretch;
+    min-height: 100%;
+}
+
+.catalog-top .background-img img{
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: top center;
 }
 
 .catalog-filters{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-    gap: clamp(1.25rem, 3vw, 3rem);
+    flex: 1 1 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: clamp(0.75rem, 2vw, 2rem);
     width: 100%;
     max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
-    /* Три столбца от ~середины контентной зоны, с отступом от правого края */
-    padding-right: clamp(16px, 3vw, 48px);
     margin-bottom: 80px;
     margin-left: 0;
-    overflow-x: auto;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    overflow: visible;
     z-index: 2;
 }
 
@@ -624,61 +787,373 @@ h4{
 }
 
 .catalog-background-imgs{
-   grid-area:1/1;
+   grid-area: 1 / 1;
    display: flex;
    flex-direction: row;
    justify-content: space-between;
-   overflow: hidden;
-   z-index: 3;
+   align-items: flex-end;
+   overflow: visible;
+   z-index: 1;
+   width: 100%;
+   max-width: 100%;
+   min-width: 0;
    height: 50%;
-   align-self: center;
-   
+   align-self: end;
+   pointer-events: none;
+}
+
+.catalog-background-imgs img{
+    max-width: 50%;
+    width: auto;
+    height: auto;
+    flex-shrink: 1;
+    object-fit: contain;
+    object-position: center bottom;
 }
 
 .catalog-top-container{
-    grid-area: 1/1;
+    grid-area: 1 / 1;
+    position: relative;
     z-index: 5;
+    isolation: isolate;
     width: 100%;
     max-width: 1620px;
     margin: 96px auto;
-    padding: 0 clamp(16px, 4vw, 48px);
+    padding: 0 150px;
     box-sizing: border-box;
+    min-width: 0;
 }
 
 .catalog-top-content{
     display: flex;
     flex-direction: row;
-    align-items: stretch;
+    align-items: flex-start;
     width: 100%;
     max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
-    gap: clamp(1rem, 2vw, 1.5rem);
+    gap: clamp(0.5rem, 1.5vw, 2rem);
+    position: relative;
+    z-index: 1;
 }
 
 .catalog-top-title{
     margin: 0;
-    width: 100%;
+    padding-right: 32px;
+    flex: 0 0 auto;
+    max-width: 100%;
 }
 
 .filter{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 10px;
-    flex: 0 0 auto;
-    min-width: min-content;
+    min-width: 0;
 }
 
 .filter h3{
     color:#F28AA1;
     margin: 0 0 6px 0;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .catalog-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:40px;
+    --catalog-grid-gap: clamp(16px, 3vw, 40px);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--catalog-grid-gap);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* ===== КОРЗИНА — верхний блок (как каталог: заголовок + форма) ===== */
+.cart-top-intro{
+    flex: 0 0 auto;
+    max-width: 100%;
+}
+
+.cart-subtitle{
+    margin: 0.35rem 0 0;
+    padding: 0;
+    color: #805741;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.cart-form--top{
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.cart-form-block{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cart-form-row{
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+}
+
+.cart-form-row--name{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cart-form-row--phone{
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.cart-form-row--street{
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.cart-form-row--detail{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 960px){
+    .cart-form-block{
+        gap: 8px;
+    }
+    .cart-form-row{
+        gap: 8px;
+    }
+    .cart-form-row--name{
+        grid-template-columns: 1fr;
+    }
+    .cart-form-row--detail{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.cart-main{
+    padding-top: 40px;
+    padding-bottom: 32px;
+}
+
+.cart-inner{
+    max-width: 1620px;
+    margin: 0 auto;
+}
+
+.cart-page .cart-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: clamp(20px, 3vw, 40px);
+    width: 100%;
+}
+
+.cart-total-section{
+    padding-bottom: 80px;
+}
+
+.cart-total-section .cart-summary{
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 24px;
+    background: #FFFAFA;
+    border-radius: 12px;
+    box-shadow: 0 8px 29px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+}
+
+.cart-total-section .summary-row,
+.cart-total-section .summary-total{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 20px;
+}
+
+.cart-total-section .summary-total{
+    margin-top: 16px;
+    margin-bottom: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(236, 194, 214, 0.6);
+    font-weight: 600;
+    font-size: 22px;
+}
+
+.cart-total-section .cart-summary .btn{
+    width: 100%;
+    max-width: none;
+    margin-top: 0;
+}
+
+/* ===== КОРЗИНА ФОРМА ===== */
+.cart-form input {
+    background: #FFEEF0;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 18px;
+    font-family: 'Mazzard M', sans-serif;
+    font-weight: 400;
+    color: #805741;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ===== КАРТОЧКИ ТОВАРОВ ===== */
+.product {
+    background: #FFFAFA;
+    border-radius: 12px;
+    box-shadow: 0px 8px 29px rgba(0, 0, 0, 0.25);
+    padding-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.product img {
+    width: 234px; /* или 203px/346px, в зависимости от макета */
+    height: auto;
+}
+
+.product .label {
+    background: #FAFFC7;
+    border-radius: 12px;
+    padding: 0 10px;
+    font-family: Mazzard, sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #F28AA1;
+    font-size: 16px;
+}
+
+.product .discount-label {
+    background: #CC4156;
+    color: #FFFAFA;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0 5px;
+    border-radius: 6px;
+}
+
+.product .title {
+    font-family: Mazzard, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #805741;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.product .price {
+    font-family: Mazzard, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #805741;
+    margin-top: 0;
+}
+
+.product .old-price {
+    font-weight: 300;
+    text-decoration: line-through;
+    margin-right: 8px;
+    color: #805741;
+}
+
+.product .quantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 50px;
+    background: #FFEEF0;
+    border-radius: 12px;
+    outline: 1px solid #F28AA1;
+    outline-offset: -1px;
+}
+
+.product .quantity div,
+.product .quantity span{
+    font-family: 'Mazzard M', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #F28AA1;
+}
+
+.product .quantity button{
+    font-family: 'Mazzard M', 'Mazzard H', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #F28AA1;
+    cursor: pointer;
+}
+
+.product .quantity button:hover{
+    background: #fff;
+}
+
+/* ===== ИТОГ ===== */
+.cart-summary {
+    font-family: Mazzard, sans-serif;
+    font-weight: 500;
+    color: #805741;
+}
+
+.cart-summary .total {
+    font-size: 40px;
+    color: #F28AA1;
+}
+
+.cart-summary .delivery {
+    font-size: 30px;
+    color: #805741;
+}
+
+.cart-summary .final {
+    font-size: 40px;
+    color: #F28AA1;
+}
+
+/* ===== КНОПКА ОПЛАТЫ ===== */
+.btn-pay {
+    background: #F28AA1;
+    border-radius: 12px;
+    padding: 12px 50px;
+    font-family: Mazzard, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: #FFFAFA;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 1400px){
+    .catalog-grid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1100px){
+    .catalog-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 .catalog-load-error,
 .catalog-empty,
@@ -700,14 +1175,15 @@ h4{
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 12px;
-    width: max-content;
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
 }
 .catalog-filter-btn{
     display: block;
-    width: max-content;
+    width: 100%;
     max-width: 100%;
     padding: 0;
     margin: 0;
@@ -721,8 +1197,11 @@ h4{
     cursor: pointer;
     font-weight: 400;
     transition: font-weight 0.15s ease;
-    white-space: nowrap;
-    flex-shrink: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    min-width: 0;
 }
 .catalog-filter-btn:hover{
     color: #805741;
@@ -791,11 +1270,30 @@ h4{
         font-size: 16px;
     }
     .header-inner{
-        flex-direction:column;
-        gap:10px;
-        height:auto;
-        padding:15px 0;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 12px 16px;
+        min-height: 0;
+        padding: 15px 16px;
         margin: 0 auto;
+    }
+    .logo{
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+    }
+    .header-contact{
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: center;
+        font-size: 16px;
+    }
+    .nav{
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: center;
+        gap: 24px;
     }
 
     .background-img{
@@ -851,8 +1349,11 @@ h4{
         width: 100%;
     }
     .footer-inner {
-        grid-template-columns: 1fr;
         padding: 0 16px;
+        gap: 24px;
+    }
+    .footer-columns{
+        grid-template-columns: 1fr;
         gap: 32px;
     }
     .footer{
@@ -874,17 +1375,80 @@ h4{
         flex: 1 1 100%;
     }
 
-    .catalog-top-container{
-        margin: 48px auto 64px;
+    .catalog-top{
+        grid-template-rows: auto auto;
+        margin-top: 0;
+    }
+    .catalog-top > .background-img{
+        grid-column: 1;
+        grid-row: 1 / -1;
+        z-index: 0;
+    }
+    .catalog-top > .catalog-top-container{
+        grid-column: 1;
+        grid-row: 1;
+        z-index: 5;
+        margin: 0 auto 64px;
         padding: 0 16px;
     }
+    .catalog-top > .catalog-background-imgs{
+        grid-column: 1;
+        grid-row: 2;
+        z-index: 4;
+        height: auto;
+        max-height: none;
+        min-height: 0;
+        align-self: end;
+        align-items: flex-end;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+        padding: 0 16px;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+    .catalog-top-content{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
     .catalog-filters{
-        padding-left: 16px;
-        padding-right: 16px;
+        flex: none;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        column-gap: clamp(1rem, 3vw, 1.5rem);
+        row-gap: 30px;
+        align-items: start;
+        width: 100%;
+    }
+    .catalog-filter-group[data-filter-group="popular"]{
+        grid-column: 1;
+        grid-row: 1;
+    }
+    .catalog-filter-group[data-filter-group="price"]{
+        grid-column: 1;
+        grid-row: 2;
+    }
+    .catalog-filter-group[data-filter-group="category"]{
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: start;
     }
 
-    .catalog-grid{
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
+    .catalog-grid .product h4{
+        font-size: 12px;
+    }
+    .catalog-grid .price{
+        font-size: 15px;
+    }
+
+    .advantages{
+        justify-content: center;
+    }
+    .advantage{
+        width: 100%;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }

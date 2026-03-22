@@ -16,17 +16,20 @@
     <header >
         <div class="container header-inner">
 
-            <div class="logo" href="index.html">
+            <a href="index.html" class="logo" aria-label="На главную">
                 <img src="img/logo.svg" alt="PinkCake">
-            </div>
+            </a>
 
             <nav class="nav">
-            <a href="#">О нас</a>
+            <a href="index.html#about">О нас</a>
             <a href="catalog.html">Каталог</a>
-            <a href="#">Корзина</a>
+            <a href="cart.html">Корзина</a>
             </nav>
 
-            <div class="phone">+7 923 928 82 99</div>
+            <a class="header-contact" href="https://t.me/+79239288299" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">
+                <img src="img/TelegramIcon.svg" width="32" height="32" alt="">
+                <span class="header-contact__phone">+7 923 928 82 99</span>
+            </a>
 
         </div>
     </header>
@@ -41,8 +44,8 @@
 
         <div class="catalog-background-imgs">
 
-            <img src="img/catalog-back2.png" alt="Фоновая картинка" style="max-width: 50%;">
-            <img src="img/catalog-back1.png" alt="Фоновая картинка" style="max-width: 50%;">
+            <img src="img/catalog-back2.png" alt="">
+            <img src="img/catalog-back1.png" alt="">
 
         </div>
 
@@ -113,5 +116,50 @@
         </section>
     </main>
 
+        <footer class="footer">
+            <div class="container footer-inner">
+
+                <a href="index.html" class="footer-logo" aria-label="На главную">
+                    <img src="img/logo.svg" alt="PinkCake" width="120">
+                </a>
+
+                <div class="footer-columns">
+
+                <div class="footer-col footer-col--left">
+
+                    <p class="footer-lead">
+                        Круглосуточный сервис доставки товаров для кондитеров, включая формы, красители, инструменты, ингредиенты, фотопечать на кондитерских изделиях и прокат оборудования.
+                    </p>
+
+                    <nav class="footer-nav" aria-label="Нижнее меню">
+                        <a href="index.html#about">О нас</a>
+                        <a href="catalog.html">Каталог</a>
+                        <a href="cart.html">Корзина</a>
+                    </nav>
+
+                    <div class="footer-meta">
+                        <p class="footer-meta__title">Контакты</p>
+                        <p class="footer-meta__text footer-meta__email">info@pinkcake.ru</p>
+                        <p class="footer-meta__text footer-meta__phone"><a href="tel:+79239288299">+7 923 928 82 99</a></p>
+
+                        <p class="footer-meta__title">Адрес</p>
+                        <p class="footer-meta__text footer-meta__address">Россия, 191186, Санкт-Петербург, ул. Большая Морская, 18</p>
+                    </div>
+
+                    <p class="footer-copy">©&nbsp;2026&nbsp;Розовый чизкейк&nbsp;0+</p>
+                </div>
+
+                <div class="footer-col footer-col--map">
+                    <div class="footer-map-wrap">
+                        <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aacea58c22fa9ec83efbfde901526d8319325cc163b80a4f0272f1d2bf2c0776f&amp;width=100%25&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
+                    </div>
+                </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+        
 </body>
 </html>
