@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Розовый чизкейк</title>
+    <link rel="preconnect" href="https://biyhsdqiuskocypowlsv.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="https://biyhsdqiuskocypowlsv.supabase.co">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="stylesheet.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
@@ -168,36 +170,53 @@
                     </p>
 
                     <form class="subscribe-form">
-                        <input type="text" placeholder="Имя">
-                        <input type="email" placeholder="Email">
-                        <button class="btn">Подписаться</button>
+                        <input type="text" placeholder="Имя" name="name" autocomplete="name">
+                        <input type="email" placeholder="Email" name="email" autocomplete="email">
+                        <button type="submit" class="btn subscribe-form__submit">Подписаться</button>
                     </form>
 
                 </div>
 
+                <img class="subscribe-img" src="img/formback.png" alt="" width="800" height="600" loading="lazy" decoding="async">
+
             </div>
-            <img src="img/formback.png" style="min-width: 50%; margin-top: 32px;">
         </section>
      </main>       
 
         <footer class="footer">
             <div class="container footer-inner">
 
-                <div class="footer-info">
+                <div class="footer-col footer-col--left">
+                    <a href="index.html" class="footer-logo" aria-label="На главную">
+                        <img src="img/logo.svg" alt="PinkCake" width="120">
+                    </a>
 
-                    <p>
-                    Круглосуточный сервис доставки товаров для кондитеров.
+                    <p class="footer-lead">
+                        Круглосуточный сервис доставки товаров для кондитеров, включая формы, красители, инструменты, ингредиенты, фотопечать на кондитерских изделиях и прокат оборудования.
                     </p>
 
-                    <p>info@pinkcake.ru</p>
-                    <p>Санкт-Петербург, ул. Большая Морская 18</p>
+                    <nav class="footer-nav" aria-label="Нижнее меню">
+                        <a href="#">О нас</a>
+                        <a href="catalog.html">Каталог</a>
+                        <a href="#">Корзина</a>
+                    </nav>
 
+                    <div class="footer-meta">
+                        <p class="footer-meta__title">Контакты</p>
+                        <p class="footer-meta__text footer-meta__email">info@pinkcake.ru</p>
+                        <p class="footer-meta__text footer-meta__phone"><a href="tel:+79239288299">+7 923 928 82 99</a></p>
+
+                        <p class="footer-meta__title">Адрес</p>
+                        <p class="footer-meta__text footer-meta__address">Россия, 191186, Санкт-Петербург, ул. Большая Морская, 18</p>
+                    </div>
+
+                    <p class="footer-copy">©&nbsp;2026&nbsp;Розовый чизкейк&nbsp;0+</p>
                 </div>
 
-                <div class="footer-menu">
-                    <a href="#">О нас</a>
-                    <a href="#">Каталог</a>
-                    <a href="#">Корзина</a>
+                <div class="footer-col footer-col--map">
+                    <div class="footer-map-wrap">
+                        <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aacea58c22fa9ec83efbfde901526d8319325cc163b80a4f0272f1d2bf2c0776f&amp;width=100%25&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
+                    </div>
                 </div>
 
             </div>
