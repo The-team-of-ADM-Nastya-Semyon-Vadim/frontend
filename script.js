@@ -5,12 +5,13 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 const CAROUSEL_OPTIONS = { speedPxPerSec: 35, resumeAfterMs: 5000 };
 
-/** Макс. размер картинки в карточке ~206×179; грузим ~2× для retina, WebP через transform */
+/** Макс. размер картинки в карточке ~206×179; грузим ~2× для retina через transform */
 const PRODUCT_IMG_DISPLAY_W = 206;
 const PRODUCT_IMG_DISPLAY_H = 179;
 const PRODUCT_IMG_FETCH_W = 412;
 const PRODUCT_IMG_FETCH_H = 358;
 const PRODUCT_IMG_QUALITY = 80;
+/** Не передаём format=webp: на части проектов Supabase отвечает 400 (allowed values). Ресайз+quality работают без format. */
 
 function encodeStoragePath(path) {
     return path
@@ -48,7 +49,6 @@ function getSupabaseOptimizedImageUrl(imagePath) {
         height: String(PRODUCT_IMG_FETCH_H),
         resize: 'contain',
         quality: String(PRODUCT_IMG_QUALITY),
-        format: 'webp',
     });
     return `${SUPABASE_URL}/storage/v1/render/image/public/${encoded}?${params.toString()}`;
 }
@@ -222,6 +222,7 @@ function createProductCard(product, index) {
     img.src = src;
     img.alt = product.name || 'Товар';
     img.decoding = 'async';
+    img.draggable = false;
     img.width = PRODUCT_IMG_DISPLAY_W;
     img.height = PRODUCT_IMG_DISPLAY_H;
     img.sizes = `${PRODUCT_IMG_DISPLAY_W}px`;
@@ -316,7 +317,11 @@ async function loadPopularProducts() {
         return;
     }
 
-    const products = data || [];
+    let products = data || [];
+    // Нечётное число карточек ломает сетку/карусель — убираем последний товар
+    if (products.length % 2 === 1) {
+        products = products.slice(0, -1);
+    }
 
     grid.innerHTML = '';
 
@@ -331,4 +336,35 @@ async function loadPopularProducts() {
     setupInfiniteCarousel(grid, CAROUSEL_OPTIONS);
 }
 
-document.addEventListener('DOMContentLoaded', loadPopularProducts);
+async function loadCatalogProducts() {
+    const grid = document.getElementById('catalog-grid');
+    if (!grid) return;
+
+    const { data, error } = await supabaseClient.from('products').select('*');
+
+    if (error) {
+        console.error('Ошибка загрузки каталога из Supabase:', error);
+        grid.innerHTML =
+            '<p class="catalog-load-error" role="alert">Не удалось загрузить товары. Попробуйте обновить страницу.</p>';
+        return;
+    }
+
+    const products = data || [];
+
+    grid.innerHTML = '';
+
+    if (products.length === 0) {
+        grid.innerHTML =
+            '<p class="catalog-empty">В каталоге пока нет товаров.</p>';
+        return;
+    }
+
+    products.forEach((product, i) => {
+        grid.appendChild(createProductCard(product, i));
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadPopularProducts();
+    loadCatalogProducts();
+});

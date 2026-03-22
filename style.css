@@ -71,6 +71,23 @@ header{
     display:grid;
 }
 
+/* Фоновые декоративные картинки: нельзя выделить и перетащить */
+.background-img img,
+.background-imgs img,
+.pop-background-imgs img,
+.offer-background-imgs img,
+.catalog-background-imgs img,
+.subscribe-img,
+img.illustration{
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
+}
+
 .illustration{
     max-width: 50%;
 }
@@ -226,20 +243,35 @@ h4{
     padding: 24px 19px 24px 19px;
     border-radius:12px;
     box-shadow:0 8px 29px rgba(0,0,0,0.1);
-    width: 292px;
-    height: 387px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+}
+
+/* Карусель на главной */
+.product-grid > .product{
+    width: 292px;
+    height: 387px;
     flex: 0 0 292px;
 }
 
-.product:nth-child(odd){
+.product-grid > .product:nth-child(odd){
     margin-top: 0;
 }
 
-.product:nth-child(even){
+.product-grid > .product:nth-child(even){
     margin-top: 78px;
+}
+
+/* Сетка каталога — без зигзага и на всю колонку */
+.catalog-grid > .product{
+    width: 100%;
+    min-height: 387px;
+    height: auto;
+}
+
+.catalog-grid > .product:nth-child(even){
+    margin-top: 0;
 }
 
 .product-image-wrapper{
@@ -258,6 +290,9 @@ h4{
     max-height: 179px;
     width: auto;
     height: auto;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .price{
@@ -616,6 +651,17 @@ h4{
     grid-template-columns:repeat(4,1fr);
     gap:40px;
 }
+.catalog-load-error,
+.catalog-empty{
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem 1rem;
+    font-family: 'Mazzard M', sans-serif;
+    margin: 0;
+}
+.catalog-load-error{
+    color: #CC4156;
+}
 
 .product-image{
     position:relative;
@@ -751,5 +797,10 @@ h4{
 
     .subscribe-form input{
         flex: 1 1 100%;
+    }
+
+    .catalog-grid{
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
     }
 }
