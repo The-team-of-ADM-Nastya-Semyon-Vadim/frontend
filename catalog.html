@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог</title>
+    <link rel="preconnect" href="https://biyhsdqiuskocypowlsv.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="https://biyhsdqiuskocypowlsv.supabase.co">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="stylesheet.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -46,41 +50,39 @@
         
             <div class="catalog-top-content">
 
-                <h2 style="margin-right: 20%;">Каталог</h2>
+                <h2 class="catalog-top-title">Каталог</h2>
 
-                <div class="catalog-filters">
+                <div class="catalog-filters" id="catalog-filters">
 
-                    <div class="filter">
+                    <div class="filter catalog-filter-group" data-filter-group="popular">
                         <h3>Популярные</h3>
-
-                        <label><input type="checkbox"> Новинки</label>
-                        <label><input type="checkbox"> Хиты продаж</label>
-                        <label><input type="checkbox"> Со скидкой</label>
-
+                        <div class="catalog-filter-list">
+                            <button type="button" class="catalog-filter-btn" data-toggle="new" aria-pressed="false" disabled>Новинки</button>
+                            <button type="button" class="catalog-filter-btn" data-toggle="hit" aria-pressed="false" disabled>Хиты продаж</button>
+                            <button type="button" class="catalog-filter-btn" data-toggle="sale" aria-pressed="false" disabled>Со скидкой</button>
+                        </div>
                     </div>
 
-
-                    <div class="filter">
-                    <h3>Фильтры</h3>
-
-                        <label><input type="checkbox"> Красители</label>
-                        <label><input type="checkbox"> Шоколад и глазури</label>
-                        <label><input type="checkbox"> Смеси и ингредиенты</label>
-                        <label><input type="checkbox"> Формы и инвентарь</label>
-                        <label><input type="checkbox"> Декор</label>
-                        <label><input type="checkbox"> Упаковка</label>
-                        <label><input type="checkbox"> Фотопечать</label>
-
+                    <div class="filter catalog-filter-group" data-filter-group="category">
+                        <h3>Фильтры</h3>
+                        <div class="catalog-filter-list">
+                            <button type="button" class="catalog-filter-btn" data-category="Красители" aria-pressed="false" disabled>Красители</button>
+                            <button type="button" class="catalog-filter-btn" data-category="Шоколад и глазури" aria-pressed="false" disabled>Шоколад и глазури</button>
+                            <button type="button" class="catalog-filter-btn" data-category="Смеси и ингредиенты" aria-pressed="false" disabled>Смеси и ингредиенты</button>
+                            <button type="button" class="catalog-filter-btn" data-category="Формы и инвентарь" aria-pressed="false" disabled>Формы и инвентарь</button>
+                            <button type="button" class="catalog-filter-btn" data-category="Декор" aria-pressed="false" disabled>Декор</button>
+                            <button type="button" class="catalog-filter-btn" data-category="Упаковка" aria-pressed="false" disabled>Упаковка</button>
+                            <button type="button" class="catalog-filter-btn" data-category="Фотопечать" aria-pressed="false" disabled>Фотопечать</button>
+                        </div>
                     </div>
 
-
-                    <div class="filter">
-                    <h3>Цена</h3>
-
-                        <label><input type="radio" name="price"> до 500 ₽</label>
-                        <label><input type="radio" name="price"> до 1000 ₽</label>
-                        <label><input type="radio" name="price"> до 1500 ₽</label>
-
+                    <div class="filter catalog-filter-group" data-filter-group="price">
+                        <h3>Цена</h3>
+                        <div class="catalog-filter-list">
+                            <button type="button" class="catalog-filter-btn" data-price-max="500" aria-pressed="false" disabled>до 500 ₽</button>
+                            <button type="button" class="catalog-filter-btn" data-price-max="1000" aria-pressed="false" disabled>до 1000 ₽</button>
+                            <button type="button" class="catalog-filter-btn" data-price-max="1500" aria-pressed="false" disabled>до 1500 ₽</button>
+                        </div>
                     </div>
                 </div>
              </div>
@@ -92,66 +94,20 @@
 
         <section class="catalog">
 
-                <div class="catalog-grid">
-
-
-                    <div class="product">
-
-                        <div class="product-image">
-                            <img src="img/product1.png">
-                            <span class="badge new">Новинка</span>
-                        </div>
-
-                        <h4>Капсулы бумажные белые</h4>
-
-                        <div class="price">78 ₽</div>
-
-                        <button class="btn">В корзину</button>
-
-                    </div>
-
-
-
-                    <div class="product">
-
-                        <div class="product-image">
-                            <img src="img/product2.png">
-                            <span class="badge hit">Хит</span>
-                        </div>
-
-                        <h4>Малина сублимированная</h4>
-
-                        <div class="price">459 ₽</div>
-
-                        <button class="btn">В корзину</button>
-
-                    </div>
-
-
-
-                    <div class="product">
-
-                        <div class="product-image">
-                            <img src="img/product3.png">
-                            <span class="badge sale">Скидка</span>
-                        </div>
-
-                        <h4>Силиконовая форма</h4>
-
-                        <div class="price">
-
-                        <span class="old">342 ₽</span>
-                        <span class="new">209 ₽</span>
-
-                        </div>
-
-                        <button class="btn">В корзину</button>
-
-                    </div>
-
-
-                </div>
-
+            <div class="catalog-grid" id="catalog-grid">
+                <!-- Заглушки до загрузки из Supabase (как в карусели на главной) -->
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
+                <div class="product product--skeleton" aria-hidden="true"><div class="product-image-wrapper"><div class="skeleton-block skeleton-shimmer"></div></div><div class="skeleton-line skeleton-line--wide skeleton-shimmer"></div><div class="skeleton-line skeleton-line--narrow skeleton-shimmer"></div><div class="skeleton-btn skeleton-shimmer"></div></div>
             </div>
 
         </section>
