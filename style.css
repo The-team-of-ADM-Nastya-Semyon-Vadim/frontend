@@ -591,8 +591,20 @@ h4{
     box-sizing: border-box;
     padding:12px;
     border-radius:8px;
-    border:none;
+    border:1px solid transparent;
     background:#FFFAFA;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.subscribe-form input:focus{
+    outline: none;
+    border-color: #CC4156;
+    box-shadow: 0 0 0 3px rgba(204, 65, 86, 0.14);
+}
+
+.subscribe-form input.is-invalid{
+    border-color: #CC4156;
+    box-shadow: 0 0 0 3px rgba(204, 65, 86, 0.12);
 }
 
 .subscribe-form__submit{
@@ -600,6 +612,27 @@ h4{
     width: 100%;
     max-width: 100%;
     margin-top: 0;
+}
+
+.subscribe-form__submit[disabled]{
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.subscribe-form__status{
+    margin: 12px 0 0;
+    min-height: 24px;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #805741;
+}
+
+.subscribe-form__status.is-error{
+    color: #CC4156;
+}
+
+.subscribe-form__status.is-success{
+    color: #5B7F2C;
 }
 
 
@@ -648,6 +681,12 @@ h4{
     font-size: 20px;
     font-weight: 400;
     line-height: 1.4;
+}
+
+@media (max-width: 1024px){
+    .footer-lead{
+        font-size: 16px;
+    }
 }
 
 .footer-nav{

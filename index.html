@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
     <title>Розовый чизкейк</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="manifest" href="site.webmanifest">
     <link rel="preconnect" href="https://biyhsdqiuskocypowlsv.supabase.co" crossorigin>
     <link rel="dns-prefetch" href="https://biyhsdqiuskocypowlsv.supabase.co">
     <link rel="stylesheet" href="style.css">
@@ -170,11 +176,12 @@
                     Будьте в курсе новых товаров, акций и специальных предложений.
                     </p>
 
-                    <form class="subscribe-form">
+                    <form class="subscribe-form" id="subscribe-form" novalidate>
                         <input type="text" placeholder="Имя" name="name" autocomplete="name">
                         <input type="email" placeholder="Email" name="email" autocomplete="email">
                         <button type="submit" class="btn subscribe-form__submit">Подписаться</button>
                     </form>
+                    <p class="subscribe-form__status" id="subscribe-form-status" aria-live="polite"></p>
 
                 </div>
 

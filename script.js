@@ -26,6 +26,150 @@ function ensureSupabaseClient() {
     return false;
 }
 
+function normalizeLeadName(value) {
+    return String(value || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function isValidLeadName(value) {
+    return /^[A-Za-zА-Яа-яЁё\s'-]{2,60}$/.test(value);
+}
+
+function isValidLeadEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+}
+
+function setupSubscribeForm() {
+    const form = document.getElementById('subscribe-form');
+    if (!form) return;
+
+    const nameInput = form.elements.namedItem('name');
+    const emailInput = form.elements.namedItem('email');
+    const submitButton = form.querySelector('.subscribe-form__submit');
+    const status = document.getElementById('subscribe-form-status');
+
+    if (!(nameInput instanceof HTMLInputElement) || !(emailInput instanceof HTMLInputElement)) {
+        return;
+    }
+
+    nameInput.required = true;
+    nameInput.minLength = 2;
+    nameInput.maxLength = 60;
+    emailInput.required = true;
+    emailInput.inputMode = 'email';
+
+    function setStatus(message, type = '') {
+        if (!status) return;
+        status.textContent = message;
+        status.classList.remove('is-error', 'is-success');
+        if (type) status.classList.add(type);
+    }
+
+    function clearFieldError(input) {
+        input.setCustomValidity('');
+        input.classList.remove('is-invalid');
+    }
+
+    function showFieldError(input, message) {
+        input.setCustomValidity(message);
+        input.classList.add('is-invalid');
+    }
+
+    function validateForm({ report = false } = {}) {
+        const normalizedName = normalizeLeadName(nameInput.value);
+        const normalizedEmail = String(emailInput.value || '').trim().toLowerCase();
+
+        nameInput.value = normalizedName;
+        emailInput.value = normalizedEmail;
+
+        clearFieldError(nameInput);
+        clearFieldError(emailInput);
+
+        let firstInvalidField = null;
+
+        if (!normalizedName) {
+            showFieldError(nameInput, 'Введите имя.');
+            firstInvalidField = firstInvalidField || nameInput;
+        } else if (!isValidLeadName(normalizedName)) {
+            showFieldError(nameInput, 'Имя должно содержать 2-60 символов: буквы, пробел, дефис или апостроф.');
+            firstInvalidField = firstInvalidField || nameInput;
+        }
+
+        if (!normalizedEmail) {
+            showFieldError(emailInput, 'Введите email.');
+            firstInvalidField = firstInvalidField || emailInput;
+        } else if (!isValidLeadEmail(normalizedEmail)) {
+            showFieldError(emailInput, 'Введите корректный email.');
+            firstInvalidField = firstInvalidField || emailInput;
+        }
+
+        if (firstInvalidField) {
+            setStatus(firstInvalidField.validationMessage, 'is-error');
+            if (report) firstInvalidField.reportValidity();
+            return null;
+        }
+
+        setStatus('');
+        return {
+            name: normalizedName,
+            email: normalizedEmail,
+        };
+    }
+
+    [nameInput, emailInput].forEach((input) => {
+        input.addEventListener('input', () => {
+            clearFieldError(input);
+            if (status?.classList.contains('is-error')) {
+                setStatus('');
+            }
+        });
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = validateForm({ report: true });
+        if (!formData) return;
+
+        if (!ensureSupabaseClient()) {
+            setStatus('Не удалось подключиться к базе данных. Попробуйте позже.', 'is-error');
+            return;
+        }
+
+        if (submitButton instanceof HTMLButtonElement) {
+            submitButton.disabled = true;
+        }
+        setStatus('Отправляем данные...', '');
+
+        try {
+            const { error } = await supabaseClient.from('leads').insert([
+                {
+                    name: formData.name,
+                    email: formData.email,
+                    created_at: new Date().toISOString(),
+                },
+            ]);
+
+            if (error) {
+                throw error;
+            }
+
+            form.reset();
+            clearFieldError(nameInput);
+            clearFieldError(emailInput);
+            setStatus('Спасибо! Вы подписаны.', 'is-success');
+        } catch (error) {
+            console.error('Ошибка отправки подписки в Supabase:', error);
+            setStatus('Не удалось отправить форму. Проверьте данные и попробуйте ещё раз.', 'is-error');
+        } finally {
+            if (submitButton instanceof HTMLButtonElement) {
+                submitButton.disabled = false;
+            }
+        }
+    });
+}
+
 const CAROUSEL_OPTIONS = { speedPxPerSec: 35, resumeAfterMs: 5000 };
 
 /** Макс. размер картинки в карточке ~206×179; грузим ~2× для retina через transform */
@@ -544,6 +688,7 @@ async function loadCatalogProducts() {
 
 document.addEventListener('DOMContentLoaded', () => {
     ensureSupabaseClient();
+    setupSubscribeForm();
     if (document.getElementById('product-grid')) {
         loadPopularProducts();
     }
