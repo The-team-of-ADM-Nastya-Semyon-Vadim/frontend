@@ -60,7 +60,7 @@
                     <p class="cart-subtitle">заказ №127</p>
                 </div>
 
-                <form class="cart-form cart-form--top" id="cart-checkout-form" action="#" method="post">
+                <form class="cart-form cart-form--top" id="cart-checkout-form" action="#" method="post" novalidate>
                     <div class="cart-form-block">
                         <div class="cart-form-row cart-form-row--name">
                             <input type="text" name="first_name" placeholder="Имя" autocomplete="given-name">
@@ -82,6 +82,7 @@
                         </div>
                     </div>
                 </form>
+                <p class="cart-form__status" id="cart-form-status" aria-live="polite"></p>
 
             </div>
 
@@ -92,7 +93,7 @@
 
         <section class="cart-main" aria-label="Товары в корзине">
             <div class="container cart-inner">
-                <div class="cart-grid">
+                <div class="cart-grid" id="cart-grid">
 
                     <div class="product">
                         <img src="img/product1.png" alt="">
@@ -139,7 +140,7 @@
                         <span>4981 ₽</span>
                     </div>
 
-                    <button type="button" class="btn">Оплатить</button>
+                    <button type="button" class="btn" id="cart-checkout-submit">Оплатить</button>
 
                 </div>
             </div>

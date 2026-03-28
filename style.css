@@ -204,7 +204,7 @@ button,
 
 
 .about{
-    padding:100px 0;
+    padding:50px 0;
 }
 
 .about h2{
@@ -245,7 +245,7 @@ h4{
     padding-bottom: 8px;
 }
 .products{
-    padding:100px 0;
+    padding:50px 0;
 }
 
 .container-popular{
@@ -377,9 +377,15 @@ h4{
 
 .catalog-grid .product h4{
     line-height: 1.35;
-    min-height: 0;
+    min-height: 72px;
     margin-bottom: 6px;
     padding-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
 }
 
 /* Цена одна строка */
@@ -397,7 +403,6 @@ h4{
     height: 43px;
     min-height: 43px;
     max-height: 43px;
-    margin-top: 10px;
     padding: 0 16px;
     box-sizing: border-box;
     font-family: 'Mazzard H', sans-serif;
@@ -445,6 +450,19 @@ h4{
 .product .btn{
     margin-top: 8px;
     width: 100%;
+}
+
+[data-product-card-action]{
+    width: 100%;
+    margin-top: 8px;
+}
+
+[data-product-card-action] .btn{
+    margin-top: 0;
+    width: 100%;
+    height: 43px;
+    min-height: 43px;
+    max-height: 43px;
 }
 
 /* Заглушки карточек до загрузки данных */
@@ -519,7 +537,7 @@ h4{
 }
 
 .offer{
-    padding:100px 0;
+    padding:50px 0;
     display: grid;
 }
 
@@ -639,7 +657,7 @@ h4{
 .footer{
     background:#FFFAFA;
     padding:80px 0;
-    margin-top: 180px;
+    margin-top: 50px;
 }
 
 .footer-inner{
@@ -788,6 +806,7 @@ h4{
     align-self: stretch;
     justify-self: stretch;
     min-height: 100%;
+    margin-top: -300px;
 }
 
 .catalog-top .background-img img{
@@ -925,6 +944,7 @@ h4{
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
+    overflow-y: hidden;
 }
 
 /* ===== КОРЗИНА — верхний блок (как каталог: заголовок + форма) ===== */
@@ -1009,6 +1029,15 @@ h4{
     width: 100%;
 }
 
+.cart-empty{
+    margin: 0;
+    padding: 32px 24px;
+    border-radius: 12px;
+    background: #FFFAFA;
+    color: #805741;
+    text-align: center;
+}
+
 .cart-total-section{
     padding-bottom: 80px;
 }
@@ -1049,6 +1078,11 @@ h4{
     margin-top: 0;
 }
 
+.cart-total-section .cart-summary .btn:disabled{
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 /* ===== КОРЗИНА ФОРМА ===== */
 .cart-form input {
     background: #FFEEF0;
@@ -1061,6 +1095,31 @@ h4{
     border: none;
     width: 100%;
     box-sizing: border-box;
+}
+
+.cart-form input:focus{
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(204, 65, 86, 0.14);
+}
+
+.cart-form input.is-invalid{
+    box-shadow: 0 0 0 3px rgba(204, 65, 86, 0.16);
+}
+
+.cart-form__status{
+    margin: 12px 0 0;
+    min-height: 24px;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #805741;
+}
+
+.cart-form__status.is-error{
+    color: #CC4156;
+}
+
+.cart-form__status.is-success{
+    color: #5B7F2C;
 }
 
 /* ===== КАРТОЧКИ ТОВАРОВ ===== */
@@ -1130,7 +1189,11 @@ h4{
     justify-content: center;
     align-items: center;
     gap: 16px;
-    padding: 12px 50px;
+    width: 100%;
+    padding: 0 20px;
+    height: 43px;
+    min-height: 43px;
+    max-height: 43px;
     background: #FFEEF0;
     border-radius: 12px;
     outline: 1px solid #F28AA1;
@@ -1265,7 +1328,7 @@ h4{
     color: #805741;
 }
 .catalog-filter-btn.is-active{
-    font-weight: 500;
+    font-weight: 700;
 }
 .catalog-filter-btn:disabled{
     opacity: 0.55;
@@ -1428,6 +1491,7 @@ h4{
     .footer{
         background:#FFFAFA;
         padding:48px 0;
+        margin-top: 50px;
     }
 
     .subscribe-inner{
@@ -1511,7 +1575,8 @@ h4{
     }
 
     .catalog-grid .product h4{
-        font-size: 12px;
+        font-size: 16px;
+        min-height: 65px;
     }
     .catalog-grid .price{
         font-size: 15px;
