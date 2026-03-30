@@ -24,7 +24,6 @@ h2{
     margin-bottom: 16px;
 }
 main{
-    max-width:1620px;
     margin:0 auto;
     padding: 0 150px;
     min-width: 0;
@@ -36,7 +35,6 @@ section.catalog{
     overflow-x: hidden;
 }
 .container{
-    max-width:1620px;
     margin: 0 auto;
     padding:0 0;
 
@@ -53,10 +51,9 @@ header{
 }
 
 .header-inner{
-    max-width: 1620px;
     min-height: 90px;
-    margin: 0 auto;
-    padding: 18px 150px;
+    margin: 0;
+    padding: 16px 150px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     grid-template-areas: "logo nav contact";
@@ -164,9 +161,7 @@ img.illustration{
 .hero-content{
     grid-area:1/1;
     z-index:2;
-    width: min(1620px, 100vw);
-    max-width: 100vw;
-    min-width: 0;
+    width: 100%;
     margin:20% auto;
     padding: 0 150px;
     box-sizing: border-box;
@@ -606,11 +601,27 @@ h4{
 
 .offer-background-imgs{
    grid-area:1/1;
-   display: flex;
-   justify-content: space-between;
+   display: grid;
+   grid-template-columns: 1fr 1fr;
    height: 100%;
    overflow: hidden;
+   align-items: stretch;
+   z-index: 3;
+}
 
+.offer-background-imgs img{
+    width: clamp(120px, 14vw, 220px);
+    height: auto;
+}
+
+.offer-background-imgs img:first-child{
+    justify-self: start;
+    align-self: start;
+}
+
+.offer-background-imgs img:last-child{
+    justify-self: end;
+    align-self: end;
 }
 .subscribe{
     padding:100px 0;
@@ -944,7 +955,6 @@ h4{
     flex-direction: row;
     align-items: flex-start;
     width: 100%;
-    max-width: 1620px;
     margin: 96px auto;
     padding: 0 150px;
     min-width: 0;
@@ -1085,7 +1095,6 @@ h4{
     padding-right: 150px;
     padding-bottom: 12px;
     box-sizing: border-box;
-    justify-content: center;
 }
 
 .cart-page .cart-grid::-webkit-scrollbar{
@@ -1102,6 +1111,30 @@ h4{
 
 .cart-page .cart-grid > .product{
     scroll-snap-align: start;
+}
+
+@media (min-width: 961px){
+    .cart-page .cart-grid{
+        scrollbar-width: thin;
+        scrollbar-color: #F28AA1 #FFE3E8;
+    }
+
+    .cart-page .cart-grid::-webkit-scrollbar{
+        height: 10px;
+    }
+
+    .cart-page .cart-grid::-webkit-scrollbar-thumb{
+        background: #F28AA1;
+        border-radius: 999px;
+    }
+
+    .cart-page .cart-grid::-webkit-scrollbar-track{
+        background: #FFE3E8;
+        border-radius: 999px;
+        border-left: 150px solid transparent;
+        border-right: 150px solid transparent;
+        background-clip: padding-box;
+    }
 }
 
 @media (max-width: 960px){
