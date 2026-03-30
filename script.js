@@ -514,6 +514,12 @@ function createCartItemCard(item) {
     const card = document.createElement('div');
     card.className = 'product';
 
+    const topSection = document.createElement('div');
+    topSection.className = 'product-section product-section--top';
+
+    const bottomSection = document.createElement('div');
+    bottomSection.className = 'product-section product-section--bottom';
+
     const imageWrapper = document.createElement('div');
     imageWrapper.className = 'product-image-wrapper';
 
@@ -551,10 +557,13 @@ function createCartItemCard(item) {
 
     const quantity = createQuantityControl(item.id, item.quantity);
 
-    card.appendChild(imageWrapper);
-    card.appendChild(title);
-    card.appendChild(price);
-    card.appendChild(quantity);
+    topSection.appendChild(imageWrapper);
+    topSection.appendChild(title);
+    bottomSection.appendChild(price);
+    bottomSection.appendChild(quantity);
+
+    card.appendChild(topSection);
+    card.appendChild(bottomSection);
 
     return card;
 }
@@ -750,6 +759,15 @@ function setupInfiniteCarousel(grid, options = {}) {
     let dragStartX = 0;
     let dragStartScrollLeft = 0;
 
+    function isInteractiveTarget(target) {
+        return target instanceof Element
+            && Boolean(
+                target.closest(
+                    'button, a, input, select, textarea, label, [data-add-to-cart="true"], [data-cart-action]'
+                )
+            );
+    }
+
     function getHalfWidth() {
         let w = 0;
         for (let i = 0; i < originals.length; i++) {
@@ -799,6 +817,7 @@ function setupInfiniteCarousel(grid, options = {}) {
     }
 
     function onPointerDown(e) {
+        if (isInteractiveTarget(e.target)) return;
         pauseIndefinitely();
         isDragging = true;
         grid.classList.add('is-dragging');
@@ -860,6 +879,12 @@ function createProductCard(product, index) {
     card.className = 'product product--enter';
     card.style.animationDelay = `${index * 70}ms`;
     card.dataset.productCardId = getProductCartId(product);
+
+    const topSection = document.createElement('div');
+    topSection.className = 'product-section product-section--top';
+
+    const bottomSection = document.createElement('div');
+    bottomSection.className = 'product-section product-section--bottom';
 
     const imageWrapper = document.createElement('div');
     imageWrapper.className = 'product-image-wrapper';
@@ -935,10 +960,13 @@ function createProductCard(product, index) {
     actionRoot.dataset.productImage = product.image_url || '';
     renderProductCardAction(actionRoot);
 
-    card.appendChild(imageWrapper);
-    card.appendChild(title);
-    card.appendChild(price);
-    card.appendChild(actionRoot);
+    topSection.appendChild(imageWrapper);
+    topSection.appendChild(title);
+    bottomSection.appendChild(price);
+    bottomSection.appendChild(actionRoot);
+
+    card.appendChild(topSection);
+    card.appendChild(bottomSection);
 
     card.addEventListener(
         'animationend',
