@@ -51,11 +51,7 @@ header{
     background:#FFFAFA;
     width: 100%;
 }
-.site-header__inner {
-        display: flex;
-    justify-content: space-between;
-    padding: 16px 16px;
-}
+
 .header-inner{
     max-width: 1620px;
     min-height: 90px;
@@ -1089,6 +1085,7 @@ h4{
     padding-right: 150px;
     padding-bottom: 12px;
     box-sizing: border-box;
+    justify-content: center;
 }
 
 .cart-page .cart-grid::-webkit-scrollbar{

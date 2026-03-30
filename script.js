@@ -189,6 +189,20 @@ function isValidCartAddress(value) {
     return value.length >= 5 && value.length <= 160;
 }
 
+const ORDER_RPC_NAME = 'create_order';
+
+function getReadableOrderErrorMessage(error) {
+    if (error?.name === 'FunctionsFetchError') {
+        return 'Не удалось связаться с сервером заказа. Проверьте, что Edge Function create-order задеплоена и доступна.';
+    }
+
+    if (typeof error?.message === 'string' && error.message.trim()) {
+        return error.message.trim();
+    }
+
+    return 'Не удалось отправить заказ. Попробуйте еще раз.';
+}
+
 function setupCartCheckoutForm() {
     const form = document.getElementById('cart-checkout-form');
     if (!form) return;
@@ -256,6 +270,56 @@ function setupCartCheckoutForm() {
         input.classList.add('is-invalid');
     }
 
+    function getCheckoutPayload() {
+        const cartItems = getCartItems();
+        const totals = getCartTotals(cartItems);
+        const firstName = normalizeCartFormValue(firstNameInput.value);
+        const lastName = normalizeCartFormValue(lastNameInput.value);
+        const phone = String(phoneInput.value || '').trim();
+        const address = normalizeCartFormValue(addressInput.value);
+        const entrance = normalizeCartFormValue(entranceInput?.value || '');
+        const apartment = normalizeCartFormValue(aptInput?.value || '');
+        const intercom = normalizeCartFormValue(intercomInput?.value || '');
+        const floor = normalizeCartFormValue(floorInput?.value || '');
+
+        return {
+            customer: {
+                first_name: firstName,
+                last_name: lastName,
+                full_name: `${firstName} ${lastName}`.trim(),
+                phone,
+            },
+            delivery: {
+                address,
+                entrance,
+                apartment,
+                intercom,
+                floor,
+            },
+            items: cartItems.map((item) => {
+                const quantity = Number(item.quantity) || 0;
+                const unitPrice = Number(item.price) || 0;
+
+                return {
+                    product_id: String(item.id || ''),
+                    product_name: item.name || 'Товар',
+                    quantity,
+                    unit_price: unitPrice,
+                    line_total: quantity * unitPrice,
+                    image_url: item.image_url || '',
+                };
+            }),
+            summary: {
+                items_count: totals.itemCount,
+                subtotal_amount: totals.subtotal,
+                delivery_amount: totals.delivery,
+                total_amount: totals.total,
+            },
+            source: 'website',
+            submitted_at: new Date().toISOString(),
+        };
+    }
+
     function validateCartForm({ report = false } = {}) {
         const normalizedFirstName = normalizeCartFormValue(firstNameInput.value);
         const normalizedLastName = normalizeCartFormValue(lastNameInput.value);
@@ -313,16 +377,18 @@ function setupCartCheckoutForm() {
         return true;
     }
 
-    [...requiredInputs, ...optionalInputs.filter((input) => input instanceof HTMLInputElement)].forEach((input) => {
+    const allInputs = [...requiredInputs, ...optionalInputs.filter((input) => input instanceof HTMLInputElement)];
+
+    allInputs.forEach((input) => {
         input.addEventListener('input', () => {
             clearFieldError(input);
-            if (status?.classList.contains('is-error')) {
+            if (status?.classList.contains('is-error') || status?.classList.contains('is-success')) {
                 setStatus('');
             }
         });
     });
 
-    submitButton?.addEventListener('click', (event) => {
+    submitButton?.addEventListener('click', async (event) => {
         event.preventDefault();
 
         if (getCartItems().length === 0) {
@@ -334,7 +400,66 @@ function setupCartCheckoutForm() {
             return;
         }
 
-        setStatus('Форма заполнена корректно. Можно переходить к оплате.', 'is-success');
+        if (!ensureSupabaseClient()) {
+            setStatus('Не удалось подключиться к серверу заказа. Попробуйте позже.', 'is-error');
+            return;
+        }
+
+        const orderPayload = getCheckoutPayload();
+
+        if (submitButton instanceof HTMLButtonElement) {
+            submitButton.disabled = true;
+        }
+        setStatus('Отправляем заказ...', '');
+        console.log('Checkout payload object:', orderPayload);
+        console.log('Checkout payload JSON:\n' + JSON.stringify(orderPayload, null, 2));
+        console.log('Order RPC:', ORDER_RPC_NAME);
+
+        try {
+            const { data, error } = await supabaseClient.rpc(ORDER_RPC_NAME, {
+                payload: orderPayload,
+            });
+
+            if (error) {
+                throw error;
+            }
+
+            console.log('Checkout response:', data);
+
+            clearCartItems();
+            renderCartPage();
+            syncProductCardControls();
+            form.reset();
+            allInputs.forEach((input) => clearFieldError(input));
+
+            const successMessage =
+                typeof data?.message === 'string' && data.message.trim()
+                    ? data.message.trim()
+                    : 'Заказ успешно отправлен.';
+
+            setStatus(successMessage, 'is-success');
+        } catch (error) {
+            console.error('Ошибка отправки заказа в Supabase:', error);
+
+            const errorMessage =
+                typeof error?.message === 'string' && error.message.trim()
+                    ? error.message.trim()
+                    : 'Не удалось отправить заказ. Попробуйте еще раз.';
+
+            console.error('Order RPC:', ORDER_RPC_NAME);
+            console.error('Order error details:', {
+                name: error?.name,
+                message: error?.message,
+                context: error?.context,
+            });
+            setStatus(getReadableOrderErrorMessage(error), 'is-error');
+        } finally {
+            renderCartPage();
+            if (submitButton instanceof HTMLButtonElement) {
+                submitButton.disabled = false;
+            }
+        }
+        return;
     });
 }
 
@@ -387,6 +512,10 @@ function saveCartItems(items) {
     } catch (error) {
         console.error('Не удалось сохранить корзину:', error);
     }
+}
+
+function clearCartItems() {
+    saveCartItems([]);
 }
 
 function addItemToCart(product) {
