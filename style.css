@@ -607,6 +607,7 @@ h4{
    overflow: hidden;
    align-items: stretch;
    z-index: 3;
+   pointer-events: none;
 }
 
 .offer-background-imgs img{
