@@ -29,6 +29,49 @@ function getReadableOrderErrorMessage(error) {
     return 'Не удалось отправить заказ. Попробуйте еще раз.';
 }
 
+function setupInputMaxLength(inputs, maxLength) {
+    inputs
+        .filter((input) => input instanceof HTMLInputElement)
+        .forEach((input) => {
+            input.maxLength = maxLength;
+        });
+}
+
+function clearFieldError(input) {
+    input.setCustomValidity('');
+    input.classList.remove('is-invalid');
+}
+
+function showFieldError(input, message) {
+    input.setCustomValidity(message);
+    input.classList.add('is-invalid');
+}
+
+function validateFieldValue(input, value, { emptyMessage, invalidMessage, isValid }) {
+    if (!value) {
+        showFieldError(input, emptyMessage);
+        return false;
+    }
+
+    if (!isValid(value)) {
+        showFieldError(input, invalidMessage);
+        return false;
+    }
+
+    return true;
+}
+
+function setButtonDisabled(button, disabled) {
+    if (button instanceof HTMLButtonElement) {
+        button.disabled = disabled;
+    }
+}
+
+function refreshCartUI() {
+    syncProductCardControls();
+    renderCartPage();
+}
+
 function setupCartCheckoutForm() {
     const form = document.getElementById('cart-checkout-form');
     if (!form) return;
@@ -73,11 +116,7 @@ function setupCartCheckoutForm() {
     addressInput.maxLength = 160;
     addressInput.autocomplete = 'street-address';
 
-    [entranceInput, aptInput, intercomInput, floorInput]
-        .filter((input) => input instanceof HTMLInputElement)
-        .forEach((input) => {
-            input.maxLength = 20;
-        });
+    setupInputMaxLength([entranceInput, aptInput, intercomInput, floorInput], 20);
 
     function setStatus(message, type = '') {
         if (!status) return;
@@ -86,14 +125,13 @@ function setupCartCheckoutForm() {
         if (type) status.classList.add(type);
     }
 
-    function clearFieldError(input) {
-        input.setCustomValidity('');
-        input.classList.remove('is-invalid');
-    }
-
-    function showFieldError(input, message) {
-        input.setCustomValidity(message);
-        input.classList.add('is-invalid');
+    function getOptionalDetails() {
+        return {
+            entrance: normalizeCartFormValue(entranceInput?.value || ''),
+            apartment: normalizeCartFormValue(aptInput?.value || ''),
+            intercom: normalizeCartFormValue(intercomInput?.value || ''),
+            floor: normalizeCartFormValue(floorInput?.value || ''),
+        };
     }
 
     function getCheckoutPayload() {
@@ -103,10 +141,7 @@ function setupCartCheckoutForm() {
         const lastName = normalizeCartFormValue(lastNameInput.value);
         const phone = String(phoneInput.value || '').trim();
         const address = normalizeCartFormValue(addressInput.value);
-        const entrance = normalizeCartFormValue(entranceInput?.value || '');
-        const apartment = normalizeCartFormValue(aptInput?.value || '');
-        const intercom = normalizeCartFormValue(intercomInput?.value || '');
-        const floor = normalizeCartFormValue(floorInput?.value || '');
+        const optionalDetails = getOptionalDetails();
 
         return {
             customer: {
@@ -117,10 +152,7 @@ function setupCartCheckoutForm() {
             },
             delivery: {
                 address,
-                entrance,
-                apartment,
-                intercom,
-                floor,
+                ...optionalDetails,
             },
             items: cartItems.map((item) => {
                 const quantity = Number(item.quantity) || 0;
@@ -147,51 +179,45 @@ function setupCartCheckoutForm() {
     }
 
     function validateCartForm({ report = false } = {}) {
-        const normalizedFirstName = normalizeCartFormValue(firstNameInput.value);
-        const normalizedLastName = normalizeCartFormValue(lastNameInput.value);
-        const normalizedPhone = String(phoneInput.value || '').trim();
-        const normalizedAddress = normalizeCartFormValue(addressInput.value);
+        const fieldConfigs = [
+            {
+                input: firstNameInput,
+                value: normalizeCartFormValue(firstNameInput.value),
+                emptyMessage: 'Введите имя.',
+                invalidMessage: 'Имя должно содержать 2-40 символов.',
+                isValid: isValidCartPersonName,
+            },
+            {
+                input: lastNameInput,
+                value: normalizeCartFormValue(lastNameInput.value),
+                emptyMessage: 'Введите фамилию.',
+                invalidMessage: 'Фамилия должна содержать 2-40 символов.',
+                isValid: isValidCartPersonName,
+            },
+            {
+                input: phoneInput,
+                value: String(phoneInput.value || '').trim(),
+                emptyMessage: 'Введите телефон.',
+                invalidMessage: 'Введите корректный телефон.',
+                isValid: isValidCartPhone,
+            },
+            {
+                input: addressInput,
+                value: normalizeCartFormValue(addressInput.value),
+                emptyMessage: 'Введите адрес доставки.',
+                invalidMessage: 'Адрес должен содержать от 5 до 160 символов.',
+                isValid: isValidCartAddress,
+            },
+        ];
 
-        firstNameInput.value = normalizedFirstName;
-        lastNameInput.value = normalizedLastName;
-        phoneInput.value = normalizedPhone;
-        addressInput.value = normalizedAddress;
+        fieldConfigs.forEach(({ input, value }) => {
+            input.value = value;
+            clearFieldError(input);
+        });
 
-        requiredInputs.forEach((input) => clearFieldError(input));
-
-        let firstInvalidField = null;
-
-        if (!normalizedFirstName) {
-            showFieldError(firstNameInput, 'Введите имя.');
-            firstInvalidField = firstInvalidField || firstNameInput;
-        } else if (!isValidCartPersonName(normalizedFirstName)) {
-            showFieldError(firstNameInput, 'Имя должно содержать 2-40 символов.');
-            firstInvalidField = firstInvalidField || firstNameInput;
-        }
-
-        if (!normalizedLastName) {
-            showFieldError(lastNameInput, 'Введите фамилию.');
-            firstInvalidField = firstInvalidField || lastNameInput;
-        } else if (!isValidCartPersonName(normalizedLastName)) {
-            showFieldError(lastNameInput, 'Фамилия должна содержать 2-40 символов.');
-            firstInvalidField = firstInvalidField || lastNameInput;
-        }
-
-        if (!normalizedPhone) {
-            showFieldError(phoneInput, 'Введите телефон.');
-            firstInvalidField = firstInvalidField || phoneInput;
-        } else if (!isValidCartPhone(normalizedPhone)) {
-            showFieldError(phoneInput, 'Введите корректный телефон.');
-            firstInvalidField = firstInvalidField || phoneInput;
-        }
-
-        if (!normalizedAddress) {
-            showFieldError(addressInput, 'Введите адрес доставки.');
-            firstInvalidField = firstInvalidField || addressInput;
-        } else if (!isValidCartAddress(normalizedAddress)) {
-            showFieldError(addressInput, 'Адрес должен содержать от 5 до 160 символов.');
-            firstInvalidField = firstInvalidField || addressInput;
-        }
+        const firstInvalidField = fieldConfigs.find(({ input, value, emptyMessage, invalidMessage, isValid }) => (
+            !validateFieldValue(input, value, { emptyMessage, invalidMessage, isValid })
+        ))?.input;
 
         if (firstInvalidField) {
             setStatus(firstInvalidField.validationMessage, 'is-error');
@@ -233,9 +259,7 @@ function setupCartCheckoutForm() {
 
         const orderPayload = getCheckoutPayload();
 
-        if (submitButton instanceof HTMLButtonElement) {
-            submitButton.disabled = true;
-        }
+        setButtonDisabled(submitButton, true);
         setStatus('Отправляем заказ...', '');
         console.log('Checkout payload object:', orderPayload);
         console.log('Checkout payload JSON:\n' + JSON.stringify(orderPayload, null, 2));
@@ -251,8 +275,7 @@ function setupCartCheckoutForm() {
             console.log('Checkout response:', data);
 
             clearCartItems();
-            renderCartPage();
-            syncProductCardControls();
+            refreshCartUI();
             form.reset();
             allInputs.forEach((input) => clearFieldError(input));
 
@@ -273,9 +296,7 @@ function setupCartCheckoutForm() {
             setStatus(getReadableOrderErrorMessage(error), 'is-error');
         } finally {
             renderCartPage();
-            if (submitButton instanceof HTMLButtonElement) {
-                submitButton.disabled = false;
-            }
+            setButtonDisabled(submitButton, false);
         }
     });
 }
@@ -562,8 +583,7 @@ function setupAddToCartButtons() {
                 price: Number(addButton.dataset.productPrice || 0),
                 image_url: addButton.dataset.productImage || '',
             });
-            syncProductCardControls();
-            renderCartPage();
+            refreshCartUI();
             return;
         }
 
@@ -578,14 +598,12 @@ function setupAddToCartButtons() {
 
         const nextQuantity = action === 'increase' ? item.quantity + 1 : item.quantity - 1;
         updateCartItemQuantity(cartId, nextQuantity);
-        syncProductCardControls();
-        renderCartPage();
+        refreshCartUI();
     });
 }
 
 function setupCartPage() {
-    syncProductCardControls();
-    renderCartPage();
+    refreshCartUI();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

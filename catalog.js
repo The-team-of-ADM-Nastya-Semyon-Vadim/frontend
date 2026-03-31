@@ -178,18 +178,6 @@ function createProductCard(product, index) {
         if ('fetchPriority' in img) img.fetchPriority = 'low';
     }
 
-    const placeholderFallback = 'img/product-placeholder.png';
-    img.addEventListener('error', function onImgError() {
-        if (fallbackSrc && img.src !== fallbackSrc) {
-            img.src = fallbackSrc;
-            return;
-        }
-        if (img.src !== placeholderFallback) {
-            img.src = placeholderFallback;
-            return;
-        }
-        img.removeEventListener('error', onImgError);
-    });
 
     imageWrapper.appendChild(img);
 
@@ -205,18 +193,18 @@ function createProductCard(product, index) {
     if (hasSalePrice && product.price != null) {
         const regularSpan = document.createElement('span');
         regularSpan.className = 'price-regular--old';
-        regularSpan.textContent = `${product.price} ₽`;
+        regularSpan.textContent = `${product.price}`;
 
         const saleSpan = document.createElement('span');
         saleSpan.className = 'price-sale';
-        saleSpan.textContent = `${product.sale_price} ₽`;
+        saleSpan.textContent = `${product.sale_price}`;
 
         price.appendChild(regularSpan);
         price.appendChild(saleSpan);
     } else if (product.price != null) {
         const regularSpan = document.createElement('span');
         regularSpan.className = 'price-regular';
-        regularSpan.textContent = `${product.price} ₽`;
+        regularSpan.textContent = `${product.price}`;
         price.appendChild(regularSpan);
     } else {
         price.textContent = 'Цена по запросу';
