@@ -193,18 +193,18 @@ function createProductCard(product, index) {
     if (hasSalePrice && product.price != null) {
         const regularSpan = document.createElement('span');
         regularSpan.className = 'price-regular--old';
-        regularSpan.textContent = `${product.price}`;
+        regularSpan.textContent = `${product.price}₽`;
 
         const saleSpan = document.createElement('span');
-        saleSpan.className = 'price-sale';
-        saleSpan.textContent = `${product.sale_price}`;
+        saleSpan.className = 'price-discounted';
+        saleSpan.textContent = `${product.sale_price}₽`;
 
         price.appendChild(regularSpan);
         price.appendChild(saleSpan);
     } else if (product.price != null) {
         const regularSpan = document.createElement('span');
         regularSpan.className = 'price-regular';
-        regularSpan.textContent = `${product.price}`;
+        regularSpan.textContent = `${product.price}₽`;
         price.appendChild(regularSpan);
     } else {
         price.textContent = 'Цена по запросу';
@@ -435,3 +435,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCatalogProducts();
     }
 });
+
+
+

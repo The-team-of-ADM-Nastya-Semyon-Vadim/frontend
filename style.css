@@ -88,6 +88,18 @@ header{
     text-decoration:none;
     color:#805741;
     white-space: nowrap;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.nav a:hover{
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-underline-offset: 4px;
+}
+
+.catalog-page .nav a[href="catalog.html"],
+.cart-page .nav a[href="cart.html"]{
+    color: #F28AA1;
 }
 
 .header-contact{
@@ -170,6 +182,7 @@ img.illustration{
     display:flex;
     flex-direction: column;
     align-self: flex-start;
+    align-items: flex-start;
     gap: 16px;
     justify-self: center;
     width: 100%;
@@ -213,8 +226,23 @@ button,
     cursor:pointer;
     margin-top: 16px;
     max-width: 253px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
     font-size: 18px;
     font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover{
+    background: #e46f89;
+}
+
+.hero-text .btn{
+    align-self: flex-start;
+    width: fit-content;
+    max-width: none;
 }
 
 
@@ -464,9 +492,14 @@ h4{
     margin-right: 8px;
 }
 
-.price-sale{
+.price-discounted{
     font-weight: 700;
     color: #CC4156;
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
+    border: 0;
+    padding: 0;
 }
 
 .product h4{
@@ -1002,6 +1035,11 @@ h4{
     max-width: 100%;
 }
 
+.cart-page .catalog-top-content{
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
 .cart-subtitle{
     margin: 0.35rem 0 0;
     padding: 0;
@@ -1227,6 +1265,7 @@ h4{
 .cart-form__status{
     margin: 12px 0 0;
     min-height: 24px;
+    width: 100%;
     font-size: 16px;
     line-height: 1.4;
     color: #805741;
@@ -1261,7 +1300,7 @@ h4{
     background: #FAFFC7;
     border-radius: 12px;
     padding: 0 10px;
-    font-family: Mazzard, sans-serif;
+    font-family: 'Mazzard M', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
     color: #F28AA1;
@@ -1279,7 +1318,7 @@ h4{
 }
 
 .product .title {
-    font-family: Mazzard, sans-serif;
+    font-family: 'Mazzard M', sans-serif;
     font-weight: 500;
     font-size: 18px;
     color: #805741;
@@ -1288,7 +1327,7 @@ h4{
 }
 
 .product .price {
-    font-family: Mazzard, sans-serif;
+    font-family: 'Mazzard M', sans-serif;
     font-weight: 700;
     font-size: 24px;
     color: #805741;
@@ -1343,12 +1382,12 @@ h4{
 }
 
 .product .quantity button:hover{
-    background: #FFEEF0;
+    background: #ffdfe4;
 }
 
 /* ===== ИТОГ ===== */
 .cart-summary {
-    font-family: Mazzard, sans-serif;
+    font-family: 'Mazzard M', sans-serif;
     font-weight: 500;
     color: #805741;
 }
@@ -1373,7 +1412,7 @@ h4{
     background: #F28AA1;
     border-radius: 12px;
     padding: 12px 50px;
-    font-family: Mazzard, sans-serif;
+    font-family: 'Mazzard M', sans-serif;
     font-weight: 500;
     font-size: 18px;
     color: #FFFAFA;
@@ -1382,6 +1421,11 @@ h4{
     align-items: center;
     gap: 10px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-pay:hover {
+    background: #e46f89;
 }
 
 @media (max-width: 1400px){
@@ -1596,6 +1640,11 @@ h4{
     .btn{
         max-width:100%;
         width: 100%;
+    }
+
+    .hero-text .btn{
+        width: fit-content;
+        max-width: none;
     }
     .product-image-wrapper img{
         width: 140px;
