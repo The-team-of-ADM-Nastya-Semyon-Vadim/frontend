@@ -90,6 +90,13 @@ header{
     white-space: nowrap;
 }
 
+.nav a:hover{
+    color: #F28AA1;
+}
+.nav a:active{
+    font-weight: 700;
+    color: #F28AA1;
+}
 .header-contact{
     grid-area: contact;
     display: inline-flex;
@@ -215,8 +222,14 @@ button,
     max-width: 253px;
     font-size: 18px;
     font-weight: 500;
+    text-align: center;
 }
-
+.btn:hover{
+    background:#FFEEF0;
+    color: #F28AA1;
+    outline: 1px solid #F28AA1;
+    outline-offset: -1px;
+}
 
 .about{
     padding:50px 0;
@@ -1444,10 +1457,11 @@ h4{
     min-width: 0;
 }
 .catalog-filter-btn:hover{
-    color: #805741;
+    color: #F28AA1;
 }
 .catalog-filter-btn.is-active{
     font-weight: 700;
+    color: #F28AA1;
 }
 .catalog-filter-btn:disabled{
     opacity: 0.55;
