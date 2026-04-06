@@ -1363,6 +1363,9 @@ h4{
     font-weight: 500;
     font-size: 18px;
     color: #F28AA1;
+    min-width: 2ch;
+    text-align: center;
+    flex: 0 0 2ch;
 }
 
 .product .quantity button{
