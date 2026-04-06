@@ -1488,10 +1488,11 @@ h4{
     min-width: 0;
 }
 .catalog-filter-btn:hover{
-    color: #805741;
+    color: #F28AA1;
 }
 .catalog-filter-btn.is-active{
     font-weight: 700;
+    color: #F28AA1;
 }
 .catalog-filter-btn:disabled{
     opacity: 0.55;
