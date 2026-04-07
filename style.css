@@ -598,7 +598,7 @@ h4{
     100%{ background-position: -200% 0; }
 }
 
-/* Появление реальных карточек после загрузки */
+
 .product--enter{
     opacity: 0;
     transform: translateY(10px);

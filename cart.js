@@ -409,7 +409,6 @@ function createQuantityControl(itemId, quantity) {
     const decreaseButton = document.createElement('button');
     decreaseButton.type = 'button';
     decreaseButton.textContent = '−';
-    decreaseButton.setAttribute('aria-label', 'Уменьшить количество');
     decreaseButton.dataset.cartAction = 'decrease';
     decreaseButton.dataset.cartId = itemId;
 
@@ -419,7 +418,6 @@ function createQuantityControl(itemId, quantity) {
     const increaseButton = document.createElement('button');
     increaseButton.type = 'button';
     increaseButton.textContent = '+';
-    increaseButton.setAttribute('aria-label', 'Увеличить количество');
     increaseButton.dataset.cartAction = 'increase';
     increaseButton.dataset.cartId = itemId;
 

@@ -361,7 +361,6 @@ function setupCatalogFilters() {
             event.preventDefault();
             event.stopPropagation();
             button.classList.toggle('is-active');
-            button.setAttribute('aria-pressed', String(button.classList.contains('is-active')));
             applyCatalogFilters();
             return;
         }
@@ -373,12 +372,10 @@ function setupCatalogFilters() {
 
             root.querySelectorAll('.catalog-filter-btn[data-price-max]').forEach((entry) => {
                 entry.classList.remove('is-active');
-                entry.setAttribute('aria-pressed', 'false');
             });
 
             if (!wasActive) {
                 button.classList.add('is-active');
-                button.setAttribute('aria-pressed', 'true');
             }
 
             applyCatalogFilters();
