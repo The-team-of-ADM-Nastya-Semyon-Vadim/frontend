@@ -78,7 +78,7 @@ function setupSubscribeForm() {
         input.classList.add('is-invalid');
     }
 
-    function validateForm({ report = false } = {}) {
+    function validateForm() {
         const normalizedName = normalizeLeadName(nameInput.value);
         const normalizedEmail = String(emailInput.value || '').trim().toLowerCase();
 
@@ -108,7 +108,7 @@ function setupSubscribeForm() {
 
         if (firstInvalidField) {
             setStatus(firstInvalidField.validationMessage, 'is-error');
-            if (report) firstInvalidField.reportValidity();
+            firstInvalidField.reportValidity();
             return null;
         }
 
@@ -131,7 +131,7 @@ function setupSubscribeForm() {
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const formData = validateForm({ report: true });
+        const formData = validateForm();
         if (!formData) return;
 
         if (!ensureSupabaseClient()) {
